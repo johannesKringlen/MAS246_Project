@@ -9,14 +9,17 @@ revision  date        description
 */
 
 #include "Encoder.h"
+#include "LCD.h"
 
 Encoder encoder;
+LCD lcd;
 
 class Elevator
 {
   public:
-  void begin()
+  void Begin()
   {
-    encoder.begin();
+    encoder.Begin();
+    lcd.Begin();
   };
 };

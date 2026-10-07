@@ -11,25 +11,33 @@ revision  date        description
 class ElevatorButton
 {
   private:
-
+  bool _debugMode;
+  
+  
   int _pinNumber;
 
   public:
-
-  void begin(int pinNumber)
+  
+  void Begin(int pinNumber, bool debugMode)
   {
     _pinNumber=pinNumber;
+    _debugMode = debugMode;
     pinMode(_pinNumber, INPUT);
-    Serial.print("Elevator button ");
-    Serial.print(_pinNumber);
-    Serial.println(" initialized");
-
+    if(_debugMode == 1)
+    {
+        Serial.print("Elevator button ");
+        Serial.print(_pinNumber-22);
+        Serial.println(" initialized");
+    }
   };
 
   bool GetStatus()
   {
-    Serial.print("Getting status for button ");
-    Serial.println(_pinNumber);
+    if(_debugMode == 1)
+    {
+      Serial.print("Getting status for button ");
+      Serial.println(_pinNumber);
+    }
     return digitalRead(_pinNumber);
   };
 };
