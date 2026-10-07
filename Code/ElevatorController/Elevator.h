@@ -1,5 +1,5 @@
 /*Elevator
-This file will take care of elevator floor request
+This class represents the elevator’s current state, including its floor, direction, and movement status.
 
 History:
 

@@ -1,5 +1,5 @@
 /*Encoder
-This file will take care of elevator floor request
+This class measures the elevator’s speed and position.
 
 History:
 
