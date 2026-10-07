@@ -1,5 +1,5 @@
 /*Queue
-This file will take care of elevator floor request
+This class manages the list of requested elevator floors.
 
 History:
 

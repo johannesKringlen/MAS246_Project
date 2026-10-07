@@ -1,6 +1,6 @@
 #include "HardwareSerial.h"
 /*Button
-This file will take care of elevator floor request
+This class represents a button and manages its pressed and illuminated states.
 
 History:
 

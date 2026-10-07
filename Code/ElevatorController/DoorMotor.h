@@ -1,5 +1,5 @@
 /*DoorMotor
-This file will take care of elevator floor request
+This class controls opening and closing the elevator doors.
 
 History:
 

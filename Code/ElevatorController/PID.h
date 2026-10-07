@@ -1,8 +1,9 @@
 /*PID
-This call will take care of the PID control
-kp is the proprortional component
-ki is the integral component
-kd is the derivate component
+  This class implements a PID controller.
+
+  kp: proportional coefficient
+  ki: integral coefficient
+  kd: derivative coefficient
 
 History:
 
@@ -11,28 +12,54 @@ revision  date        description
 
 */
 
-class PID(float kp, float ki, float kd)
+class PID()
 {
   private:
-  float _kp = kp;
-  float _ki = ki;
-  float _kd = kd;
+  float _kp;
+  float _ki;
+  float _kd;
   float _eInt = 0;
   float _ePrevious = 0;
-  float _dt = 0;
-  float _lastTime = millis();
+  unsigned long  _lastTime = millis();
+  bool _firstCalculation = true;
 
   public:
-  float calculatePID(float setpoint, float actual)
+  PID(float kp, float ki, float kd)
   {
-    float actualTime = millis()
-    dt =  actualTime - lastTime;
-    
-    float eActual = setpoint - actual;
-    float eDot = (eActual - _ePrevious)/_dt;
-    _eInt = _eInt + eActual*_dt;
+    _kp = kp;
+    _ki = ki;
+    _kd = kd;
+    _lastTime = millis();
+  }
+
+  float CalculatePID(float setpoint, float actual)
+  {
+    unsigned long actualTime = millis()
+    float dt =  (actualTime - lastTime)/1000.0f; // dt in seconds
+
+    // Prevent division by zero during the first calculation
+    if (_dt <= 0.0f)
+    {
+      return 0.0f;
+    }
+
+    // Calculate the error
+    float error = setpoint - actual;
+
+    // Calculate the derivate
+    float eDot = 0.0f;
+    if (!_firstCalculation)
+    {
+      eDot = (error - _ePrevious) / dt;
+    }
+
+    // Calculate the intergral
+    _eInt = _eInt + error*dt;
+
+    // Update values
     _lastTime = actualTime;
-    _ePrevious = eActual;
-    return _kp*eActual + _ki*_eInt + _kd*eDot;
+    _ePrevious = error;
+    
+    return _kp*error + _ki*_eInt + _kd*eDot;
   };
 };

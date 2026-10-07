@@ -1,5 +1,5 @@
 /*FloorButton
-This file will take care of elevator floor request
+This class represents a button used to request the elevator from a specific floor.
 
 History:
 

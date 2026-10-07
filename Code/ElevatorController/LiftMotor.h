@@ -1,5 +1,5 @@
 /*LiftMotor
-This file will take care of elevator floor request
+This class controls the elevator’s vertical movement.
 
 History:
 
