@@ -11,7 +11,7 @@ revision  date        description
 class Brake
 {
   public:
-  void begin()
+  void Begin()
   {
     //add initialize here
   };

@@ -15,8 +15,8 @@ void setup()
 Serial.begin(9600);
 delay(1500);
 
-elevator.begin();
-buttons.begin();
+elevator.Begin();
+buttons.Begin();
 
 
 }
@@ -26,6 +26,13 @@ void loop()
   if (eBtn1.GetStatus() == HIGH)
   {
     Serial.println("button 1 pressed");
+    
+  }
+  if (eBtn2.GetStatus() == HIGH)
+  {
+    Serial.println("button 2 pressed");
+    lcd.BackLight(0);
+    
   }
 delay(2000);
 

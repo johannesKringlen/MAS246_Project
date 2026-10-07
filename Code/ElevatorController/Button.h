@@ -27,14 +27,14 @@ ElevatorButton eBtn4;
 class Button
 {
   public:
-  void begin()
+  void Begin()
   {
-    fBtn1Up.begin();
+    fBtn1Up.Begin();
     Serial.println();
-    eBtn1.begin(23);
-    eBtn2.begin(24);
-    eBtn3.begin(25);
-    eBtn4.begin(26);
+    eBtn1.Begin(23,0);
+    eBtn2.Begin(24,0);
+    eBtn3.Begin(25,0);
+    eBtn4.Begin(26,0);
     
   };
 };
