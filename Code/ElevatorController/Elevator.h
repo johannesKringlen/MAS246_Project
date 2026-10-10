@@ -16,10 +16,14 @@ LCD lcd;
 
 class Elevator
 {
+  private:
+  bool _log;
+
   public:
-  void Begin()
+  void Begin(bool log)
   {
-    encoder.Begin();
-    lcd.Begin();
+    _log =log;
+    encoder.Begin(_log);
+    lcd.Begin(_log);
   };
 };

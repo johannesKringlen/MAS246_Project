@@ -10,9 +10,12 @@ revision  date        description
 
 class Encoder
 {
+  private:
+    bool _log;
+
   public:
-  void Begin()
+  void Begin(bool log)
   {
-    //add initialize here
+    _log = log;
   };
 };

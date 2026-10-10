@@ -6,9 +6,10 @@ This class represents a button used to select a destination floor inside the ele
 History:
 
 revision  date        description
-0.0.2     09.10.2026  included class button
+0.0.3     10.10.2026  Updated Get Status and SetButtonLight
+0.0.2     09.10.2026  Included class button
                       implemented inherited functions
-0.0.1     01.10.2026  file created
+0.0.1     01.10.2026  File created
 
 */
 #include "Button.h"
@@ -18,46 +19,80 @@ class ElevatorButton : public Button
   private:
   bool _log;
   
-  
   int _inputPin;
   int _outputPin;
-  bool _lastState;
+  bool _lastStateBtn;
+  bool _lastStateLed;
+  bool _isPressed;
+
 
   public:
+  int floorNum;
 
-  void Begin(int inputPin, int outputPin,  bool log) override
+  void Begin(int inputPin, int outputPin,  bool log)
   {
     _inputPin=inputPin;
-     _outputPin=outputPin;
+    floorNum = _inputPin-22;
+    _outputPin=outputPin;
     _log = log;
     pinMode(_inputPin, INPUT);
     pinMode(_outputPin, OUTPUT);
     if(_log == 1)
     {
         Serial.print("Elevator button ");
-        Serial.print(_inputPin-22);
+        Serial.print(floorNum);
         Serial.println(" initialized");
     }
   };
 
-  bool GetStatus() override
+  bool GetStatus()
   {
-    bool actualState = digitalRead(_inputPin);
-    if(_lastState != actualState)
+    _isPressed = digitalRead(_inputPin);
+    if(_lastStateBtn != _isPressed)
     {
         Serial.print("Elevator button ");
         Serial.print(_inputPin-22);
-        Serial.print(" = ");
-        Serial.println(actualState);
+        if(_isPressed == 1)
+        {
+          Serial.println(" is pressed");
+          SetButtonLight(true); // to be added by queue, not here
+        }
+        else
+        {
+          Serial.println(" is released");          
+          SetButtonLight(false); // to be removed from queue, not here
+        }
+        isPressed = _isPressed;
     };
 
-    _lastState = actualState;
-    return actualState;
+    _lastStateBtn = _isPressed;
+    return _isPressed;
   };
 
   void SetButtonLight(bool onOff) override
   {
-    digitalWrite(_outputPin, onOff);
+    if(_lastStateLed != onOff)
+    {
+      digitalWrite(_outputPin, onOff);
+      Serial.print("Elevator button ");
+      Serial.print(_inputPin-22);
+      Serial.print(" light");
+      if(onOff)
+      {
+        Serial.println(" on");        
+      }
+      else 
+      {
+        Serial.println(" off");
+      }
+    }
     isIlluminated = onOff;
+    _lastStateLed = onOff;
+  }
+
+  void UpdateStatus()
+  {
+    _isPressed = digitalRead(_inputPin);
+    isPressed = _isPressed;
   }
 };
