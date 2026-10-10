@@ -13,14 +13,15 @@ revision  date        description
 
 class Button
 {
-  public:
+  protected:
 
+  public:
+  bool isPressed{0};
   bool isIlluminated{0};
   
-  virtual bool GetStatus() = 0;
+  //virtual bool GetStatus() = 0;
 
-  virtual void Begin(int inputPin, int outputPin,  bool log);
+  //virtual void Begin(int inputPin, int outputPin,  bool log);
 
-  virtual void SetButtonLight(bool onOff);
-
+  virtual void SetButtonLight(bool onOff) = 0;
 };

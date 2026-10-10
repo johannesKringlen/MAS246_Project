@@ -13,6 +13,7 @@ revision  date        description
 class LCD
 {
   private:
+    bool _log;
     static const int lcd_RS = 41;
     static const int lcd_EN = 40;
     static const int lcd_D4 = 37;
@@ -29,12 +30,17 @@ class LCD
     {
     }
     
-  void Begin()
+  void Begin(bool log)
   {
-    pinMode(lcd_BackLight, OUTPUT);
-    BackLight(1);
+    _log =log;
+    pinMode(lcd_BackLight, OUTPUT);    
+    BackLight(0);
     lcd.begin(16,2);
     Clear();  
+    if(_log == 1)
+    {
+      Serial.println("LCD initialized");
+    }
   };
 
   void Clear()
