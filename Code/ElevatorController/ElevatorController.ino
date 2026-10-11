@@ -2,33 +2,31 @@
 This is the main file
 */
 
+#include "Brake.h"
+#include "DoorMotor.h"
+#include "Elevator.h" 
 #include "ElevatorButton.h"
 #include "FloorButton.h"
 #include "LiftMotor.h"
-#include "DoorMotor.h"
-#include "Brake.h"
-#include "Elevator.h" 
+#include "Load.h"
 
 DoorMotor doorMotor;
-
 Elevator elevator;
-
 ElevatorButton eBtn1;
 ElevatorButton eBtn2;
 ElevatorButton eBtn3;
 ElevatorButton eBtn4;
-
 FloorButton fBtn1Up('1', 1, "up");
 FloorButton fBtn2Up('2', 2, "up");
 FloorButton fBtn2Down('w', 2, "down");
 FloorButton fBtn3Up('3', 3, "up");
 FloorButton fBtn3Down('e', 3, "down");
 FloorButton fBtn4Down('4', 4, "down");
-
+Load load;
 int nextFloor;
 int elevatorStatus; // 1 = Stop, 2 = Going up, 3 = Going down
 int doorStatus; // 1 = Closed, 2 = Opening, 3 Open, 4 = Closing
-bool firstTime;
+bool firstTimeEl;
 bool firstTimeDoor;
 bool startupDoorMessage;
 
@@ -38,74 +36,70 @@ void setup()
   nextFloor = 1;
   elevatorStatus = 1;
   doorStatus = 1;
+  firstTimeEl = true;
+  firstTimeDoor = false;
+  startupDoorMessage = true;
   Serial.begin(9600);
   delay(1500);
   Serial.println();
 
   doorMotor.Begin(log);
   elevator.Begin(log);
-
   eBtn1.Begin(23,48,log);
   eBtn2.Begin(24,47,log);
   eBtn3.Begin(25,46,log); 
   eBtn4.Begin(26,45,log);
-
   fBtn1Up.Begin(log);
   fBtn2Up.Begin(log);
   fBtn2Down.Begin(log);
   fBtn3Up.Begin(log);
   fBtn3Down.Begin(log);
   fBtn4Down.Begin(log);
-  firstTime = true;
-  firstTimeDoor = false;
-  startupDoorMessage = true;
+  load.Begin(log);
 }
 
 void loop()
 {
-  LCDOnOff(); // to be removed when done with th program
+  LCDOnOff(); // to be removed when done with the program
   switch (elevatorStatus) 
   {
     case 1:
     {
-      if (firstTime) 
+      if (firstTimeEl) 
       {
         elevator.currentFloor = nextFloor;
-        String tempString = "Elevator stopped at ";
+        String tempString = "Elevator stopped at floor ";
         tempString += String(elevator.currentFloor);
-        tempString += " floor";
         Serial.println(tempString);
-        String tempRow = "Stopped";
-        tempRow += "       F";  
+        String tempRow = "Stop at floor ";
         tempRow += String(elevator.currentFloor);
         lcd.WriteToRow(0, tempRow);
         elevator.isMoving = false;
       };      
-      DoorSequence(firstTime);
-      firstTime = false;        
+      DoorSequence(firstTimeEl);
+      firstTimeEl = false;        
       GetStatusFloorBtn();
       GetStatusElevatorBtn();
       if (nextFloor > elevator.currentFloor) 
       {
         elevatorStatus = 2;
-        firstTime = true;
+        firstTimeEl = true;
       }
       if (nextFloor < elevator.currentFloor) 
       {
         elevatorStatus = 3;
-        firstTime = true;
+        firstTimeEl = true;
       }
       break;
     }
     case 2:
     { 
-      if (firstTime) 
+      if (firstTimeEl) 
       {
         Serial.println("Elevator going up");
-        String row = "Moving ";
-        row += "       Up";  
+        String row = "Moving up       ";  
         lcd.WriteToRow(0, row);
-        firstTime = false;
+        firstTimeEl = false;
         elevator.isMoving = true;
         elevator.actualDirection = 1;
       }
@@ -113,19 +107,18 @@ void loop()
       delay(3000);
       elevator.currentFloor = 2;
       elevatorStatus = 1;      
-      firstTime = true;
+      firstTimeEl = true;
       firstTimeDoor = true;
       break;
     }
     case 3:
     { 
-      if (firstTime) 
+      if (firstTimeEl) 
       {
         Serial.println("Elevator going down");
-        String row = "Moving ";
-        row += "     Down";  
+        String row = "Moving down     ";
         lcd.WriteToRow(0, row);
-        firstTime = false;
+        firstTimeEl = false;
         elevator.isMoving = true;
         elevator.actualDirection = 2;
       }
@@ -133,7 +126,7 @@ void loop()
       delay(3000);
       elevator.currentFloor = 1;
       elevatorStatus = 1;
-      firstTime = true;
+      firstTimeEl = true;
       firstTimeDoor = true;
       break; 
     }
@@ -142,7 +135,7 @@ void loop()
   }
 }
 
-void DoorSequence(bool firstTime)
+void DoorSequence(bool firstTimeEl)
 {
   // 1 = Closed, 2 = Opening, 3 Open, 4 = Closing
   switch (doorStatus) 
@@ -171,7 +164,7 @@ void DoorSequence(bool firstTime)
     {
       lcd.WriteToRow(1, "Opening door    ");
       Serial.println("Opening door");    
-      delay(2000); // to be replace with transiction
+      doorMotor.OpenDoor(12, 10000);
       doorStatus = 3;
       break;
     }  
@@ -179,7 +172,7 @@ void DoorSequence(bool firstTime)
     {
       lcd.WriteToRow(1, "Door open       ");
       Serial.println("Door open");
-      delay(2000);
+      CheckLoad();
       doorStatus = 4;
       break;
     }  
@@ -187,7 +180,7 @@ void DoorSequence(bool firstTime)
     {
       lcd.WriteToRow(1, "Closing door    ");
       Serial.println("Closing door");
-      delay(2000); // to be replace with transiction
+      doorMotor.CloseDoor(12, 10000);
       doorStatus = 1;   
       lcd.WriteToRow(1, "Door closed     ");
       Serial.println("Door closed");
@@ -250,3 +243,27 @@ void GetStatusElevatorBtn()
   }  
 }
 
+void CheckLoad()
+{
+  int tmpLoad = 0;
+  unsigned long startTime = millis();
+  const unsigned long duration = 10000; // 10 seconds
+  while (millis() - startTime < duration || load.overload) 
+  {
+    tmpLoad = load.GetStatus();
+    if (load.overload) 
+    {
+      lcd.WriteToRow(0, "Too Heavy       ");
+      String tmpString = "Weight ";
+      tmpString += String(tmpLoad);
+      tmpString += " kg     ";
+      lcd.WriteToRow(1, tmpString);
+    }
+  }
+  lcd.WriteToRow(0, "Weight ok       ");    
+  lcd.WriteToRow(1, "Door open       "); 
+  delay(2000);
+  String tempRow = "Stop at floor ";
+  tempRow += String(elevator.currentFloor);
+  lcd.WriteToRow(0, tempRow);
+}
