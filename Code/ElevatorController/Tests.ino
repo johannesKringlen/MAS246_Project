@@ -2,7 +2,28 @@
 This file it's just to play with compenents until all program is in place
 */
 
-bool _log= false;
+const int pinSW6 = 28; // sw 6
+const int pinSW7 = 29; // sw 7
+
+void initSwitches()
+{
+  pinMode(pinSW6, INPUT);
+  pinMode(pinSW7, INPUT);
+}
+
+void LCDOnOff()
+{
+  if (digitalRead(pinSW6) == HIGH) 
+  {
+    lcd.Clear();
+    lcd.BackLight(false);
+  }
+  if (digitalRead(pinSW7) == HIGH) 
+  {
+    lcd.BackLight(true);
+  }
+}
+
 
 void testLCD()
 {
@@ -29,17 +50,16 @@ void testLCD()
 void testDoor(bool log)
 {
   // Test Door
-  _log = log;
   if (eBtn1.isPressed) 
   {
     lcd.WriteToRow(1, "Opening door    ");
-    if(_log)
+    if(log)
     {
       Serial.println("Opening door");
     };
     doorMotor.OpenDoor(15, 4000);
     lcd.WriteToRow(1, "Door open       ");
-    if(_log)
+    if(log)
     {
       Serial.println("Door open");
     };
@@ -47,13 +67,13 @@ void testDoor(bool log)
   if (eBtn2.isPressed) 
   {
     lcd.WriteToRow(1, "Closing door    ");
-    if(_log)
+    if(log)
     {
       Serial.println("Closing door");
     };
     doorMotor.CloseDoor(15, 4000);
     lcd.WriteToRow(1, "Door closed     ");
-    if(_log)
+    if(log)
     {
       Serial.println("Door closed");
     };    

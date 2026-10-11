@@ -1,3 +1,7 @@
+/* ElevatorController
+This is the main file
+*/
+
 #include "ElevatorButton.h"
 #include "FloorButton.h"
 #include "LiftMotor.h"
@@ -23,8 +27,10 @@ FloorButton fBtn4Down('4', 4, "down");
 
 int nextFloor;
 int elevatorStatus; // 1 = Stop, 2 = Going up, 3 = Going down
-int doorStatus; // 1 = Open, 2 = Opening, 3 Closed, 4 = Closing
+int doorStatus; // 1 = Closed, 2 = Opening, 3 Open, 4 = Closing
 bool firstTime;
+bool firstTimeDoor;
+bool startupDoorMessage;
 
 void setup()
 {
@@ -51,10 +57,13 @@ void setup()
   fBtn3Down.Begin(log);
   fBtn4Down.Begin(log);
   firstTime = true;
+  firstTimeDoor = false;
+  startupDoorMessage = true;
 }
 
 void loop()
 {
+  LCDOnOff(); // to be removed when done with th program
   switch (elevatorStatus) 
   {
     case 1:
@@ -71,8 +80,9 @@ void loop()
         tempRow += String(elevator.currentFloor);
         lcd.WriteToRow(0, tempRow);
         elevator.isMoving = false;
-        firstTime = false;
-      };
+      };      
+      DoorSequence(firstTime);
+      firstTime = false;        
       GetStatusFloorBtn();
       GetStatusElevatorBtn();
       if (nextFloor > elevator.currentFloor) 
@@ -99,11 +109,12 @@ void loop()
         elevator.isMoving = true;
         elevator.actualDirection = 1;
       }
-      // below to be replaced with real control
+      // below to be replaced with real motor control
       delay(3000);
       elevator.currentFloor = 2;
-      elevatorStatus = 1;
+      elevatorStatus = 1;      
       firstTime = true;
+      firstTimeDoor = true;
       break;
     }
     case 3:
@@ -118,13 +129,70 @@ void loop()
         elevator.isMoving = true;
         elevator.actualDirection = 2;
       }
-      // below to be replaced with real control
+      // below to be replaced with real motor control
       delay(3000);
       elevator.currentFloor = 1;
       elevatorStatus = 1;
       firstTime = true;
+      firstTimeDoor = true;
       break; 
     }
+    default:
+    break;
+  }
+}
+
+void DoorSequence(bool firstTime)
+{
+  // 1 = Closed, 2 = Opening, 3 Open, 4 = Closing
+  switch (doorStatus) 
+  {
+    case 1:
+    {
+      // First message at start up
+      if (startupDoorMessage)
+      {
+        lcd.WriteToRow(1, "Door closed     ");
+        Serial.println("Door closed");
+        startupDoorMessage = false;
+      }
+
+      // The elevator has just arrived at the floor
+      if (firstTimeDoor) 
+      {
+        lcd.WriteToRow(1, "Door closed     ");
+        Serial.println("Door closed");
+        doorStatus = 2;
+        firstTimeDoor = false;
+      }      
+      break;
+    }
+    case 2:
+    {
+      lcd.WriteToRow(1, "Opening door    ");
+      Serial.println("Opening door");    
+      delay(2000); // to be replace with transiction
+      doorStatus = 3;
+      break;
+    }  
+    case 3:
+    {
+      lcd.WriteToRow(1, "Door open       ");
+      Serial.println("Door open");
+      delay(2000);
+      doorStatus = 4;
+      break;
+    }  
+    case 4:
+    {
+      lcd.WriteToRow(1, "Closing door    ");
+      Serial.println("Closing door");
+      delay(2000); // to be replace with transiction
+      doorStatus = 1;   
+      lcd.WriteToRow(1, "Door closed     ");
+      Serial.println("Door closed");
+      break;
+    }  
     default:
     break;
   }
@@ -135,13 +203,29 @@ void GetStatusFloorBtn()
   if (Serial.available() > 0) 
   {
     char key = Serial.read();
-    if (fBtn1Up.GetStatus(key) || fBtn2Up.GetStatus(key) || fBtn3Up.GetStatus(key)) 
+    if (fBtn1Up.GetStatus(key)) 
     {
-      nextFloor = 2; // just to tets up and down.
+      nextFloor = 2;  // just to tets up and down.
     }
-    if (fBtn2Down.GetStatus(key) || fBtn3Down.GetStatus(key) || fBtn4Down.GetStatus(key)) 
+    if (fBtn2Up.GetStatus(key)) 
     {
-      nextFloor = 1; // just to tets up and down.
+      nextFloor = 3;  // just to tets up and down.
+    }
+    if (fBtn3Up.GetStatus(key)) 
+    {
+      nextFloor = 4;  // just to tets up and down.
+    }
+    if (fBtn2Down.GetStatus(key)) 
+    {
+      nextFloor = 1;  // just to tets up and down.
+    }
+    if (fBtn3Down.GetStatus(key)) 
+    {
+      nextFloor = 2;  // just to tets up and down.
+    }
+    if (fBtn4Down.GetStatus(key)) 
+    {
+      nextFloor = 3;  // just to tets up and down.
     }
   }
 }
