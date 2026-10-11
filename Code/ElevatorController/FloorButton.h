@@ -54,6 +54,7 @@ public:
       return isPressed;
     }
     SetButtonLight(false); // to be removed from queue, not here
+    isPressed = false;
     return false;
   }
 
