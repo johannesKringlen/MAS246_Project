@@ -34,7 +34,7 @@ class LCD
   {
     _log =log;
     pinMode(lcd_BackLight, OUTPUT);    
-    BackLight(0);
+    BackLight(1);
     lcd.begin(16,2);
     Clear();  
     if(_log == 1)
