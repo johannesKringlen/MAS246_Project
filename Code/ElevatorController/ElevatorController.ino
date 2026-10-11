@@ -21,10 +21,17 @@ FloorButton fBtn3Up('3', 3, "up");
 FloorButton fBtn3Down('e', 3, "down");
 FloorButton fBtn4Down('4', 4, "down");
 
+int nextFloor;
+int elevatorStatus; // 1 = Stop, 2 = Going up, 3 = Going down
+int doorStatus; // 1 = Open, 2 = Opening, 3 Closed, 4 = Closing
+bool firstTime;
 
 void setup()
 {
   bool log = true;
+  nextFloor = 1;
+  elevatorStatus = 1;
+  doorStatus = 1;
   Serial.begin(9600);
   delay(1500);
   Serial.println();
@@ -43,14 +50,84 @@ void setup()
   fBtn3Up.Begin(log);
   fBtn3Down.Begin(log);
   fBtn4Down.Begin(log);
+  firstTime = true;
 }
 
 void loop()
 {
-  GetStatusFloorBtn();
-  GetStatusElevatorBtn();
-  //testLCD();
-  //testDoor(true);
+  switch (elevatorStatus) 
+  {
+    case 1:
+    {
+      if (firstTime) 
+      {
+        elevator.currentFloor = nextFloor;
+        String tempString = "Elevator stopped at ";
+        tempString += String(elevator.currentFloor);
+        tempString += " floor";
+        Serial.println(tempString);
+        String tempRow = "Stopped";
+        tempRow += "       F";  
+        tempRow += String(elevator.currentFloor);
+        lcd.WriteToRow(0, tempRow);
+        elevator.isMoving = false;
+        firstTime = false;
+      };
+      GetStatusFloorBtn();
+      GetStatusElevatorBtn();
+      if (nextFloor > elevator.currentFloor) 
+      {
+        elevatorStatus = 2;
+        firstTime = true;
+      }
+      if (nextFloor < elevator.currentFloor) 
+      {
+        elevatorStatus = 3;
+        firstTime = true;
+      }
+      break;
+    }
+    case 2:
+    { 
+      if (firstTime) 
+      {
+        Serial.println("Elevator going up");
+        String row = "Moving ";
+        row += "       Up";  
+        lcd.WriteToRow(0, row);
+        firstTime = false;
+        elevator.isMoving = true;
+        elevator.actualDirection = 1;
+      }
+      // below to be replaced with real control
+      delay(3000);
+      elevator.currentFloor = 2;
+      elevatorStatus = 1;
+      firstTime = true;
+      break;
+    }
+    case 3:
+    { 
+      if (firstTime) 
+      {
+        Serial.println("Elevator going down");
+        String row = "Moving ";
+        row += "     Down";  
+        lcd.WriteToRow(0, row);
+        firstTime = false;
+        elevator.isMoving = true;
+        elevator.actualDirection = 2;
+      }
+      // below to be replaced with real control
+      delay(3000);
+      elevator.currentFloor = 1;
+      elevatorStatus = 1;
+      firstTime = true;
+      break; 
+    }
+    default:
+    break;
+  }
 }
 
 void GetStatusFloorBtn()
@@ -58,20 +135,34 @@ void GetStatusFloorBtn()
   if (Serial.available() > 0) 
   {
     char key = Serial.read();
-    fBtn1Up.GetStatus(key);
-    fBtn2Up.GetStatus(key);
-    fBtn2Down.GetStatus(key);
-    fBtn3Up.GetStatus(key);
-    fBtn3Down.GetStatus(key);
-    fBtn4Down.GetStatus(key);
+    if (fBtn1Up.GetStatus(key) || fBtn2Up.GetStatus(key) || fBtn3Up.GetStatus(key)) 
+    {
+      nextFloor = 2; // just to tets up and down.
+    }
+    if (fBtn2Down.GetStatus(key) || fBtn3Down.GetStatus(key) || fBtn4Down.GetStatus(key)) 
+    {
+      nextFloor = 1; // just to tets up and down.
+    }
   }
 }
 
 void GetStatusElevatorBtn()
 {
-  eBtn1.GetStatus();
-  eBtn2.GetStatus();
-  eBtn3.GetStatus();
-  eBtn4.GetStatus();
+  if (eBtn1.GetStatus()) 
+  {
+    nextFloor = 1;  // just to tets up and down.
+  }
+  if (eBtn2.GetStatus()) 
+  {
+    nextFloor = 2;  // just to tets up and down.
+  }
+  if (eBtn3.GetStatus()) 
+  {
+    nextFloor = 3;  // just to tets up and down.
+  }
+  if (eBtn4.GetStatus()) 
+  {
+    nextFloor = 4;  // just to tets up and down.
+  }  
 }
 
