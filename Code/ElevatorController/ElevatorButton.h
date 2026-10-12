@@ -54,12 +54,12 @@ class ElevatorButton : public Button
         Serial.print(_inputPin-22);
         if(_isPressed == 1)
         {
-          Serial.println(" is pressed");
+          Serial.println(" has been pressed");
           SetButtonLight(true); // to be added by queue, not here
         }
         else
         {
-          Serial.println(" is released");          
+          //Serial.println(" is released");          
           SetButtonLight(false); // to be removed from queue, not here
         }
         isPressed = _isPressed;
