@@ -9,6 +9,7 @@ This is the main file
 #include "FloorButton.h"
 #include "LiftMotor.h"
 #include "Load.h"
+#include "Queue.h"
 
 DoorMotor doorMotor;
 Elevator elevator;
@@ -23,6 +24,8 @@ FloorButton fBtn3Up('3', 3, "up");
 FloorButton fBtn3Down('e', 3, "down");
 FloorButton fBtn4Down('4', 4, "down");
 Load load;
+Queue queue;
+
 int nextFloor;
 int elevatorStatus; // 1 = Stop, 2 = Going up, 3 = Going down
 int doorStatus; // 1 = Closed, 2 = Opening, 3 Open, 4 = Closing
@@ -56,15 +59,17 @@ void setup()
   fBtn3Down.Begin(log);
   fBtn4Down.Begin(log);
   load.Begin(log);
+  queue.Begin(log);
 }
 
 void loop()
 {
   LCDOnOff(); // to be removed when done with the program
-  switch (elevatorStatus) 
+  switch (elevatorStatus) //1 = Stop, 2 = Going up, 3 = Going down
   {
     case 1:
     {
+      elevator.lastDirection = elevator.actualDirection;
       if (firstTimeEl) 
       {
         elevator.currentFloor = nextFloor;
@@ -77,9 +82,8 @@ void loop()
         elevator.isMoving = false;
       };      
       DoorSequence(firstTimeEl);
-      firstTimeEl = false;        
-      GetStatusFloorBtn();
-      GetStatusElevatorBtn();
+      firstTimeEl = false;   
+      DecideNextFloor();     
       if (nextFloor > elevator.currentFloor) 
       {
         elevatorStatus = 2;
@@ -132,6 +136,19 @@ void loop()
     }
     default:
     break;
+  }
+}
+
+void DecideNextFloor()
+{
+  if (queue.isEmpty) 
+  {
+    GetStatusFloorBtn();
+    GetStatusElevatorBtn();
+  }
+  else
+  {
+    // add some code to decide floor based on queue
   }
 }
 
@@ -259,11 +276,13 @@ void CheckLoad()
       tmpString += " kg     ";
       lcd.WriteToRow(1, tmpString);
     }
+    else 
+    {
+      String tempRow = "Stop at floor ";
+      tempRow += String(elevator.currentFloor);
+      lcd.WriteToRow(0, tempRow);
+      lcd.WriteToRow(1, "Door open       "); 
+    }
   }
-  lcd.WriteToRow(0, "Weight ok       ");    
-  lcd.WriteToRow(1, "Door open       "); 
   delay(2000);
-  String tempRow = "Stop at floor ";
-  tempRow += String(elevator.currentFloor);
-  lcd.WriteToRow(0, tempRow);
 }

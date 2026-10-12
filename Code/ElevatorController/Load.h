@@ -5,13 +5,15 @@ This class handle the load sensor.
 History:
 
 revision  date        description
-0.0.1     11.10.2026  file created
+0.0.2     12.10.2026  Add control against last weight detetcted 
+0.0.1     11.10.2026  File created
 
 */
 
 int _potValue = 0;
 static const int _pinPot = A0; // Analog input 0
 bool _log;
+int _lastWeight = 0;
 
 class Load
 {
@@ -50,13 +52,14 @@ class Load
       }     
     }
 
-    if (overload) 
+    if (overload && _lastWeight!=weight) 
     {
       String tmpString = "Passengers total weight ";
       tmpString += String(weight);
       tmpString += " kg";
       Serial.println(tmpString);
     }
+    _lastWeight = weight;
     delay(200);
     return weight;
   }
