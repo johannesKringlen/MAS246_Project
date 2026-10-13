@@ -1,15 +1,23 @@
 /* ElevatorController
 This is the main file
+
+History:
+
+revision  date        description
+0.0.2     13.10.2026  Implemented sequences
+0.0.1     01.10.2026  File created
 */
 
 #include "Brake.h"
 #include "DoorMotor.h"
 #include "Elevator.h" 
 #include "ElevatorButton.h"
+#include "Encoder.h"
 #include "FloorButton.h"
 #include "LiftMotor.h"
 #include "Load.h"
 #include "Queue.h"
+
 
 DoorMotor doorMotor;
 Elevator elevator;
@@ -17,18 +25,21 @@ ElevatorButton eBtn1;
 ElevatorButton eBtn2;
 ElevatorButton eBtn3;
 ElevatorButton eBtn4;
+Encoder encoder;
 FloorButton fBtn1Up('1', 1, "up");
 FloorButton fBtn2Up('2', 2, "up");
 FloorButton fBtn2Down('w', 2, "down");
 FloorButton fBtn3Up('3', 3, "up");
 FloorButton fBtn3Down('e', 3, "down");
 FloorButton fBtn4Down('4', 4, "down");
+LiftMotor liftMotor;
 Load load;
 Queue queue;
 
 int nextFloor;
 int elevatorStatus; // 1 = Stop, 2 = Going up, 3 = Going down
 int doorStatus; // 1 = Closed, 2 = Opening, 3 Open, 4 = Closing
+long targetPos;
 bool firstTimeEl;
 bool firstTimeDoor;
 bool startupDoorMessage;
@@ -52,12 +63,14 @@ void setup()
   eBtn2.Begin(24,47,log);
   eBtn3.Begin(25,46,log); 
   eBtn4.Begin(26,45,log);
+  encoder.Begin(log);
   fBtn1Up.Begin(log);
   fBtn2Up.Begin(log);
   fBtn2Down.Begin(log);
   fBtn3Up.Begin(log);
   fBtn3Down.Begin(log);
   fBtn4Down.Begin(log);
+  liftMotor.Begin();
   load.Begin(log);
   queue.Begin(log);
 }
@@ -107,8 +120,9 @@ void loop()
         elevator.isMoving = true;
         elevator.actualDirection = 1;
       }
-      // below to be replaced with real motor control
-      delay(3000);
+      
+      liftMotor.Move(50, encoder, targetPos);
+
       elevator.currentFloor = 2;
       elevatorStatus = 1;      
       firstTimeEl = true;
@@ -126,8 +140,8 @@ void loop()
         elevator.isMoving = true;
         elevator.actualDirection = 2;
       }
-      // below to be replaced with real motor control
-      delay(3000);
+    
+      liftMotor.Move(-50, encoder, targetPos);
       elevator.currentFloor = 1;
       elevatorStatus = 1;
       firstTimeEl = true;
@@ -145,6 +159,32 @@ void DecideNextFloor()
   {
     GetStatusFloorBtn();
     GetStatusElevatorBtn();
+    
+    switch (nextFloor)
+    {
+      case 1:
+      {
+        targetPos = 0;
+        break;
+      }
+      case 2:
+      {
+        targetPos = 4096;
+        break;
+      }
+      case 3:
+      {
+        targetPos = 8192;
+        break;
+      }
+      case 4:
+      {
+        targetPos = 12288;
+        break;
+      }
+      default:
+      break;
+    }
   }
   else
   {
@@ -215,15 +255,15 @@ void GetStatusFloorBtn()
     char key = Serial.read();
     if (fBtn1Up.GetStatus(key)) 
     {
-      nextFloor = 2;  // just to tets up and down.
+      nextFloor = 1;  // just to tets up and down.
     }
     if (fBtn2Up.GetStatus(key)) 
     {
-      nextFloor = 3;  // just to tets up and down.
+      nextFloor = 2;  // just to tets up and down.
     }
     if (fBtn3Up.GetStatus(key)) 
     {
-      nextFloor = 4;  // just to tets up and down.
+      nextFloor = 3;  // just to tets up and down.
     }
     if (fBtn2Down.GetStatus(key)) 
     {
@@ -231,11 +271,11 @@ void GetStatusFloorBtn()
     }
     if (fBtn3Down.GetStatus(key)) 
     {
-      nextFloor = 2;  // just to tets up and down.
+      nextFloor = 3;  // just to tets up and down.
     }
     if (fBtn4Down.GetStatus(key)) 
     {
-      nextFloor = 3;  // just to tets up and down.
+      nextFloor = 4;  // just to tets up and down.
     }
   }
 }
@@ -264,7 +304,7 @@ void CheckLoad()
 {
   int tmpLoad = 0;
   unsigned long startTime = millis();
-  const unsigned long duration = 10000; // 10 seconds
+  const unsigned long duration = 4000; // 10 seconds
   while (millis() - startTime < duration || load.overload) 
   {
     tmpLoad = load.GetStatus();
