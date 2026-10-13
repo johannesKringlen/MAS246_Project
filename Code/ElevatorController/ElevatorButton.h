@@ -50,10 +50,11 @@ class ElevatorButton : public Button
     _isPressed = digitalRead(_inputPin);
     if(_lastStateBtn != _isPressed)
     {
-        Serial.print("Elevator button ");
-        Serial.print(_inputPin-22);
+
         if(_isPressed == 1)
         {
+          Serial.print("Elevator button ");
+          Serial.print(_inputPin-22);
           Serial.println(" has been pressed");
           SetButtonLight(true); // to be added by queue, not here
         }
