@@ -8,10 +8,8 @@ revision  date        description
 
 */
 
-#include "Encoder.h"
 #include "LCD.h"
 
-Encoder encoder;
 LCD lcd;
 
 class Elevator
@@ -36,7 +34,7 @@ class Elevator
     lastDirection = 2;
     isMoving = false;
 
-    encoder.Begin(_log);
+  
     lcd.Begin(_log);
   };
 };
