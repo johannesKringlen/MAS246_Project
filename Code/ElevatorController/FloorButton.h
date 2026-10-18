@@ -15,14 +15,20 @@ class FloorButton : public Button
 private:
   bool _log;
   char _key;
-  int _floor;
+  const int _floor;
   const char* _direction;
   bool _lastStateLed;
   bool _isPressed;
 
 public:
+  int buttonLocation;
+  int direction; // 1= up, 2 = down
+
   FloorButton(char key, int floor, const char* direction)
-    : _key(key), _floor(floor), _direction(direction) {}
+    : _key(key), 
+    _floor(floor), 
+    _direction(direction) 
+    {}
 
   void Begin(bool log) 
   {
@@ -34,6 +40,15 @@ public:
         Serial.print(" ");
         Serial.print(_direction);
         Serial.println(" initialized");
+    }
+    buttonLocation = _floor;
+    if (strcmp(_direction, "up") == 0) 
+    {
+      direction = 1;
+    }
+    else if (strcmp(_direction, "down") == 0) 
+    {
+      direction = 2;
     }
   };
 
