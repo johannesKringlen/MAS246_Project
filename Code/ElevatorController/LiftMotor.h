@@ -3,13 +3,6 @@
 #include "HardwareSerial.h"
 /*LiftMotor
 This class controls the elevator’s vertical movement.
-
-History:
-
-revision  date        description
-0.0.2     13.10.2026  implemented motor control with timer
-0.0.1     01.10.2026  file created
-
 */
 
 class LiftMotor

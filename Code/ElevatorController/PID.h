@@ -4,12 +4,6 @@
   kp: proportional coefficient
   ki: integral coefficient
   kd: derivative coefficient
-
-History:
-
-revision  date        description
-0.0.1     07.10.2026  file created
-
 */
 
 class PID()

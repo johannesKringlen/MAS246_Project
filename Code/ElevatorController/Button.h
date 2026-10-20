@@ -1,15 +1,9 @@
+/*Button
+This class represents a button and manages its pressed and illuminated states.*/
+
 #pragma once // to avoid double include when compiling
 #include "HardwareSerial.h"
-/*Button
-This class represents a button and manages its pressed and illuminated states.
 
-History:
-
-revision  date        description
-0.0.2     09.10.2026  created virtual functions
-0.0.1     01.10.2026  file created
-
-*/
 
 class Button
 {

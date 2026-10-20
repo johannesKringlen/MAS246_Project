@@ -1,13 +1,5 @@
 /*Queue
 This class manages the list of requested elevator floors.
-
-History:
-
-revision  date        description
-0.0.3     19.10.2026  Start implementing queue functions
-0.0.2     12.10.2026  Added isEmpty and functions placeholder
-0.0.1     01.10.2026  File created
-
 */
 const int QUEUE_SIZE = 4;
 
@@ -37,7 +29,7 @@ class Queue
     // Check range valid
     if(floorNr < 1 || floorNr > 4)
     {
-      tmpString += " outside range allowed";
+      tmpString += " outside allowed range";
       Serial.println(tmpString);
       return false;
     }
@@ -73,6 +65,7 @@ class Queue
     _queueCount++;
     tmpString += " added to queue";
     Serial.println(tmpString);
+    printQueue();
     return true;
   }
 
@@ -93,6 +86,7 @@ class Queue
       Serial.print("Floor ");
       Serial.print(floorNr);
       Serial.println(" removed from queue");
+      printQueue();
 
       return true;
     }
