@@ -1,11 +1,6 @@
 /* ElevatorController
 This is the main file
 
-History:
-
-revision  date        description
-0.0.2     13.10.2026  Implemented sequences
-0.0.1     01.10.2026  File created
 */
 
 #include "Brake.h"
@@ -219,6 +214,11 @@ void DoorSequence(bool firstTimeEl)
     }
     case 2:
     {
+      if (queue.RemoveFromQueue(elevator.currentFloor))
+      {
+        ClearFloorLights(elevator.currentFloor);
+      }
+
       lcd.WriteToRow(1, "Opening door    ");
       Serial.println("Opening door");    
       doorMotor.OpenDoor(12, 10000);
@@ -250,54 +250,118 @@ void DoorSequence(bool firstTimeEl)
 
 void GetStatusFloorBtn()
 {
+  int tempFloor;
+  int actualFloor = elevator.currentFloor;
   if (Serial.available() > 0) 
   {
     char key = Serial.read();
     if (fBtn1Up.GetStatus(key)) 
     {
-      nextFloor = 1;  // just to tets up and down.
+      tempFloor = 1;   
+
+      if (actualFloor != tempFloor) 
+      {
+        queue.AddToQueue(tempFloor);
+        fBtn1Up.SetButtonLight(true);     
+      }
     }
+
     if (fBtn2Up.GetStatus(key)) 
     {
-      nextFloor = 2;  // just to tets up and down.
+      tempFloor = 2;   
+      if (actualFloor != tempFloor) 
+      {
+        queue.AddToQueue(tempFloor);
+        fBtn2Up.SetButtonLight(true);     
+      }
     }
+
     if (fBtn3Up.GetStatus(key)) 
     {
-      nextFloor = 3;  // just to tets up and down.
+      tempFloor = 3;   
+      if (actualFloor != tempFloor) 
+      {
+        queue.AddToQueue(tempFloor);
+        fBtn3Up.SetButtonLight(true);     
+      }
     }
+
     if (fBtn2Down.GetStatus(key)) 
     {
-      nextFloor = 1;  // just to tets up and down.
+      tempFloor = 2;   
+      if (actualFloor != tempFloor) 
+      {
+        queue.AddToQueue(tempFloor);
+        fBtn2Down.SetButtonLight(true);     
+      }
     }
+
     if (fBtn3Down.GetStatus(key)) 
     {
-      nextFloor = 3;  // just to tets up and down.
+      tempFloor = 3;   
+      if (actualFloor != tempFloor) 
+      {
+        queue.AddToQueue(tempFloor);
+        fBtn3Down.SetButtonLight(true);     
+      }
     }
+    
     if (fBtn4Down.GetStatus(key)) 
     {
-      nextFloor = 4;  // just to tets up and down.
+      tempFloor = 4;   
+      if (actualFloor != tempFloor) 
+      {
+        queue.AddToQueue(tempFloor);
+        fBtn4Down.SetButtonLight(true);     
+      }
     }
   }
 }
 
 void GetStatusElevatorBtn()
 {
+  int tempFloor;
+  int actualFloor = elevator.currentFloor;
   if (eBtn1.GetStatus()) 
   {
-    nextFloor = 1;  // just to tets up and down.
+    tempFloor = 1;   
+    if (actualFloor != tempFloor) 
+    {
+      queue.AddToQueue(tempFloor);
+      eBtn1.SetButtonLight(true);     
+    }
   }
   if (eBtn2.GetStatus()) 
   {
-    nextFloor = 2;  // just to tets up and down.
+    tempFloor = 2;   
+
+    if (actualFloor != tempFloor) 
+    {
+      queue.AddToQueue(tempFloor);
+      eBtn2.SetButtonLight(true);     
+    }
   }
   if (eBtn3.GetStatus()) 
   {
-    nextFloor = 3;  // just to tets up and down.
+    tempFloor = 3;   
+    if (actualFloor != tempFloor) 
+    {
+      queue.AddToQueue(tempFloor);
+      eBtn3.SetButtonLight(true);     
+    }
   }
+  
   if (eBtn4.GetStatus()) 
   {
-    nextFloor = 4;  // just to tets up and down.
-  }  
+    tempFloor = 4;   
+    
+    if (actualFloor != tempFloor) 
+    {
+      queue.AddToQueue(tempFloor);
+      eBtn4.SetButtonLight(true);     
+    }
+  }
+ 
 }
 
 void CheckLoad()
@@ -325,4 +389,39 @@ void CheckLoad()
     }
   }
   delay(2000);
+}
+
+void ClearFloorLights(int floorNr)
+{
+  switch (floorNr)
+  {
+    case 1:
+    {
+      eBtn1.SetButtonLight(false);
+      fBtn1Up.SetButtonLight(false);
+      break;
+    }
+    case 2:
+    {
+      eBtn2.SetButtonLight(false);
+      fBtn2Up.SetButtonLight(false);
+      fBtn2Down.SetButtonLight(false);
+      break;
+    }
+    case 3:
+    {
+      eBtn3.SetButtonLight(false);
+      fBtn3Up.SetButtonLight(false);
+      fBtn3Down.SetButtonLight(false);
+      break;
+    }
+    case 4:
+    {
+      eBtn4.SetButtonLight(false);
+      fBtn4Down.SetButtonLight(false);
+      break;
+    }
+    default:
+    break;
+  };
 }

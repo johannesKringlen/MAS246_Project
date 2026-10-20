@@ -1,12 +1,5 @@
 /*Encoder
 This class measures the elevator’s speed and position.
-
-History:
-
-revision  date        description
-0.0.2     13.10.2026  Implemented encoder
-0.0.1     01.10.2026  File created
-
 */
 const int pinEncoderChA = 20; //D20
 const int pinEncoderChB = 21; //D21

@@ -1,13 +1,6 @@
 #include "HardwareSerial.h"
 /*Load
 This class handle the load sensor.
-
-History:
-
-revision  date        description
-0.0.2     12.10.2026  Add control against last weight detetcted 
-0.0.1     11.10.2026  File created
-
 */
 
 int _potValue = 0;

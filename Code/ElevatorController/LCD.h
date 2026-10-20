@@ -1,11 +1,5 @@
 /*LCD
 This class handles the communication to LCd display.
-
-History:
-
-revision  date        description
-0.0.1     07.10.2026  file created
-
 */
 
 #include "LiquidCrystal.h"

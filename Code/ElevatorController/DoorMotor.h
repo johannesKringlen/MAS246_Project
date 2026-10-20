@@ -1,12 +1,5 @@
 /*DoorMotor
 This class controls opening and closing the elevator doors.
-
-History:
-
-revision  date        description
-0.0.2     10.10.2026  Updated
-0.0.1     01.10.2026  File created
-
 */
 #include "dac.h"
 

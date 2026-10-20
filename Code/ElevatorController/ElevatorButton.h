@@ -1,17 +1,8 @@
-#include "HardwareSerial.h"
-#include "Arduino.h"
 /*ElevatorButton
 This class represents a button used to select a destination floor inside the elevator.
-
-History:
-
-revision  date        description
-0.0.3     10.10.2026  Updated Get Status and SetButtonLight
-0.0.2     09.10.2026  Included class button
-                      implemented inherited functions
-0.0.1     01.10.2026  File created
-
 */
+#include "HardwareSerial.h"
+#include "Arduino.h"
 #include "Button.h"
 
 class ElevatorButton : public Button
@@ -56,19 +47,23 @@ class ElevatorButton : public Button
           Serial.print("Elevator button ");
           Serial.print(_inputPin-22);
           Serial.println(" has been pressed");
-          SetButtonLight(true); // to be added by queue, not here
+          isPressed = true;
+          _lastStateBtn = _isPressed;
+          return true;         
         }
+        
         else
         {
-          //Serial.println(" is released");          
-          SetButtonLight(false); // to be removed from queue, not here
+          isPressed = false;
+          _lastStateBtn = _isPressed;
+          return false;
         }
-        isPressed = _isPressed;
-    };
-
-    _lastStateBtn = _isPressed;
-    return _isPressed;
-  };
+    }
+    else
+    {
+      return false;
+    }
+  }
 
   void SetButtonLight(bool onOff) override
   {

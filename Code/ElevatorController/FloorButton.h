@@ -1,11 +1,5 @@
 /*FloorButton
 This class represents a button used to request the elevator from a specific floor.
-
-History:
-
-revision  date        description
-0.0.1     10.10.2026  file created
-
 */
 
 #include "Button.h"
@@ -65,10 +59,10 @@ public:
         Serial.println(" pressed");
       }
       isPressed = true;
-      SetButtonLight(true); // to be added by queue, not here    
+      //SetButtonLight(true); // to be added by queue, not here    
       return isPressed;
     }
-    SetButtonLight(false); // to be removed from queue, not here
+    //SetButtonLight(false); // to be removed from queue, not here
     isPressed = false;
     return false;
   }
