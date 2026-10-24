@@ -73,6 +73,129 @@ void setup()
 void loop()
 {
   LCDOnOff(); // to be removed when done with the program
+  MainSequence();
+}
+
+// Checks whether any elevator or floor buttons have been pressed,
+// and adds the requested floors to the queue.
+void CheckButtons()
+{
+  GetStatusFloorBtn();
+  GetStatusElevatorBtn();
+}
+
+// Chooses the next floor using the queue, current floor, and last direction.
+void DecideNextFloor()
+{
+  nextFloor = 0;
+
+  if (!queue.isEmpty)
+  {
+    int queueCount = queue.GetCount();
+
+    if (elevator.lastDirection == 1)  // Going up
+    {
+      // Find the nearest floor above.
+      for (int i = 0; i < queueCount; i++)
+      {
+        int floor = queue.elevatorQueue[i];
+
+        if (floor > elevator.currentFloor)
+        {
+          nextFloor = floor;
+          break;
+        }
+      }
+
+      // If no floor is above, turn around and choose the highest floor below.
+      if (nextFloor == 0)
+      {
+        for (int i = queueCount - 1; i >= 0; i--)
+        {
+          int floor = queue.elevatorQueue[i];
+
+          if (floor < elevator.currentFloor)
+          {
+            nextFloor = floor;
+            break;
+          }
+        }
+      }
+    }
+    else  // Going down
+    {
+      // Find the nearest floor below by scanning from highest to lowest.
+      for (int i = queueCount - 1; i >= 0; i--)
+      {
+        int floor = queue.elevatorQueue[i];
+
+        if (floor < elevator.currentFloor)
+        {
+          nextFloor = floor;
+          break;
+        }
+      }
+
+      // If no floor is below, turn around and choose the lowest floor above.
+      if (nextFloor == 0)
+      {
+        for (int i = 0; i < queueCount; i++)
+        {
+          int floor = queue.elevatorQueue[i];
+
+          if (floor > elevator.currentFloor)
+          {
+            nextFloor = floor;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  if (nextFloor != 0)
+  {
+    GetTarget(nextFloor);
+  }
+  else 
+  {
+    nextFloor = elevator.currentFloor;
+  }
+}
+
+// Sets the encoder target position for the selected floor.
+void GetTarget(int nextFloor)
+{
+    switch (nextFloor)
+    {
+      case 1:
+      {
+        targetPos = 0;
+        break;
+      }
+      case 2:
+      {
+        targetPos = 4096;
+        break;
+      }
+      case 3:
+      {
+        targetPos = 8192;
+        break;
+      }
+      case 4:
+      {
+        targetPos = 12288;
+        break;
+      }
+      default:
+      break;
+    }
+}
+
+// Runs the main sequence.
+void MainSequence()
+{
   switch (elevatorStatus) //1 = Stop, 2 = Going up, 3 = Going down
   {
     case 1:
@@ -91,16 +214,20 @@ void loop()
       };      
       DoorSequence(firstTimeEl);
       firstTimeEl = false;   
+      CheckButtons();
       DecideNextFloor();     
-      if (nextFloor > elevator.currentFloor) 
+      if (doorStatus == 1 && !queue.isEmpty && nextFloor != elevator.currentFloor)
       {
-        elevatorStatus = 2;
-        firstTimeEl = true;
-      }
-      if (nextFloor < elevator.currentFloor) 
-      {
-        elevatorStatus = 3;
-        firstTimeEl = true;
+        if (nextFloor > elevator.currentFloor)
+        {
+          elevatorStatus = 2;
+          firstTimeEl = true;
+        }
+        else
+        {
+          elevatorStatus = 3;
+          firstTimeEl = true;
+        }
       }
       break;
     }
@@ -148,45 +275,8 @@ void loop()
   }
 }
 
-void DecideNextFloor()
-{
-  if (queue.isEmpty) 
-  {
-    GetStatusFloorBtn();
-    GetStatusElevatorBtn();
-    
-    switch (nextFloor)
-    {
-      case 1:
-      {
-        targetPos = 0;
-        break;
-      }
-      case 2:
-      {
-        targetPos = 4096;
-        break;
-      }
-      case 3:
-      {
-        targetPos = 8192;
-        break;
-      }
-      case 4:
-      {
-        targetPos = 12288;
-        break;
-      }
-      default:
-      break;
-    }
-  }
-  else
-  {
-    // add some code to decide floor based on queue
-  }
-}
 
+// Runs the door sequence: opening, waiting, and closing.
 void DoorSequence(bool firstTimeEl)
 {
   // 1 = Closed, 2 = Opening, 3 Open, 4 = Closing
@@ -241,6 +331,7 @@ void DoorSequence(bool firstTimeEl)
       doorStatus = 1;   
       lcd.WriteToRow(1, "Door closed     ");
       Serial.println("Door closed");
+      delay(2000);
       break;
     }  
     default:
@@ -248,6 +339,7 @@ void DoorSequence(bool firstTimeEl)
   }
 }
 
+// Checks floor buttons, queues requested floors, and turns on their button lights.
 void GetStatusFloorBtn()
 {
   int tempFloor;
@@ -318,6 +410,7 @@ void GetStatusFloorBtn()
   }
 }
 
+// Checks elevator buttons, queues requested floors, and turns on their button lights.
 void GetStatusElevatorBtn()
 {
   int tempFloor;
@@ -364,6 +457,7 @@ void GetStatusElevatorBtn()
  
 }
 
+// Checks whether the elevator load exceeds the allowed limit.
 void CheckLoad()
 {
   int tmpLoad = 0;
@@ -387,10 +481,12 @@ void CheckLoad()
       lcd.WriteToRow(0, tempRow);
       lcd.WriteToRow(1, "Door open       "); 
     }
+    CheckButtons();
   }
   delay(2000);
 }
 
+// Turns off all button lights associated with the arrived floor.
 void ClearFloorLights(int floorNr)
 {
   switch (floorNr)
