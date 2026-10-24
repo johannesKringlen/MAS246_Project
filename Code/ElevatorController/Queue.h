@@ -66,6 +66,7 @@ class Queue
     tmpString += " added to queue";
     Serial.println(tmpString);
     printQueue();
+    isEmpty = false;
     return true;
   }
 
@@ -87,7 +88,10 @@ class Queue
       Serial.print(floorNr);
       Serial.println(" removed from queue");
       printQueue();
-
+      if(_queueCount == 0)
+      {
+        isEmpty = true;
+      }
       return true;
     }
   }
@@ -102,6 +106,11 @@ class Queue
   int GetFromQueue()
   {
     // Some code to get next destination from queue
+  }
+
+  int GetCount()
+  {
+    return _queueCount;
   }
 
   void printQueue() 
