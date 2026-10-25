@@ -10,8 +10,6 @@ volatile bool A_set;
 class Encoder
 {
 private:
-  bool _log;
-
   static void doSignalA()
   {
     bool currentA = digitalRead(pinEncoderChA);
@@ -25,12 +23,9 @@ private:
   }
 
 public:
-
-
-  void Begin(bool log)
+  // Initialize the encoder
+  void Begin()
   {
-    _log = log;
-
     pinMode(pinEncoderChA, INPUT_PULLUP);
     pinMode(pinEncoderChB, INPUT_PULLUP);
     A_set = digitalRead(pinEncoderChA);
@@ -44,12 +39,9 @@ public:
 
   }
 
-  
-
-
+  // Returns the encoder position
   int GetStatus()
   {
     return encoderPos;
   }
-
 };

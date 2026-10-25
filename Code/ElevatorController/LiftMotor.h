@@ -14,7 +14,7 @@ class LiftMotor
   int deadband;
 
   public:
-
+  // Initializes the DC motor used for the lift
   void Begin() //legg inn i setup
   {
     TCCR4B = TCCR4B & 0b11111000 | 0x01; // set PWM frequency to 32 kHz
@@ -22,6 +22,7 @@ class LiftMotor
     pinMode(refSpeedPin, OUTPUT);
   }
 
+  // Moves the elevator to the target position
   void Move(int refSpeed, Encoder& encoder, int target)
   {
     String temp = "Encoder position 1 = ";
@@ -48,7 +49,7 @@ class LiftMotor
     }
 
     int pwm = 128;
-//replace alex control with PID
+    //replace alex control with PID
     while ( abs(target - encoder.GetStatus()) > 400 ) 
     {
       //Converting drive percent to PWM
@@ -66,20 +67,15 @@ class LiftMotor
       analogWrite(refSpeedPin, pwm);
     }
 
-      temp = "Encoder position 2 = ";
-      temp += String(encoder.GetStatus());
-      Serial.println(temp);
-
+    temp = "Encoder position 2 = ";
+    temp += String(encoder.GetStatus());
+    Serial.println(temp);
     analogWrite(refSpeedPin, 128);
-
     delay(500);
 
     temp = "Encoder position 3 = ";
-      temp += String(encoder.GetStatus());
-      Serial.println(temp);
-
-
+    temp += String(encoder.GetStatus());
+    Serial.println(temp);
   }
-  
-   
+     
 };

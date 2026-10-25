@@ -26,6 +26,7 @@ class PID()
     _lastTime = millis();
   }
 
+  // Return the calculated PID value
   float CalculatePID(float setpoint, float actual)
   {
     unsigned long actualTime = millis()
