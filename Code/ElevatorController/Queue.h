@@ -12,6 +12,7 @@ class Queue
   bool isEmpty;
   int elevatorQueue[QUEUE_SIZE];
 
+  // Initializes the queue
   void Begin()
   {
     isEmpty = true;

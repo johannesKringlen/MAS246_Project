@@ -9,26 +9,24 @@ LCD lcd;
 class Elevator
 {
   private:
-  bool _log;
-
+  
   public:
   int currentFloor; // 1 to 4
   int actualDirection; // 1 = up,  2 = down
   int lastDirection; // 1 = up,  2 = down
   bool isMoving;
 
-  void Begin(bool log)
+  // Initializes the elevator
+  void Begin()
   {
     /*Starting at floor 1 
       with door closed
       not moving */ 
-    _log =log;
     currentFloor = 1; 
     actualDirection = 1; 
     lastDirection = 2;
     isMoving = false;
 
-  
-    lcd.Begin(_log);
+    lcd.Begin();
   };
 };

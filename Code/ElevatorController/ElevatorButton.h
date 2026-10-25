@@ -7,9 +7,7 @@ This class represents a button used to select a destination floor inside the ele
 
 class ElevatorButton : public Button
 {
-  private:
-  bool _log;
-  
+  private: 
   int _inputPin;
   int _outputPin;
   bool _lastStateBtn;
@@ -20,22 +18,20 @@ class ElevatorButton : public Button
   public:
   int floorNum;
 
-  void Begin(int inputPin, int outputPin,  bool log)
+  // Initializes the elevator button
+  void Begin(int inputPin, int outputPin)
   {
     _inputPin=inputPin;
     floorNum = _inputPin-22;
     _outputPin=outputPin;
-    _log = log;
     pinMode(_inputPin, INPUT);
     pinMode(_outputPin, OUTPUT);
-    if(_log == 1)
-    {
-        Serial.print("Elevator button ");
-        Serial.print(floorNum);
-        Serial.println(" initialized");
-    }
+    Serial.print("Elevator button ");
+    Serial.print(floorNum);
+    Serial.println(" initialized");
   };
 
+  // Returns the current status of the elevator button.
   bool GetStatus()
   {
     _isPressed = digitalRead(_inputPin);
@@ -65,6 +61,7 @@ class ElevatorButton : public Button
     }
   }
 
+  // Turns the button light on or off.
   void SetButtonLight(bool onOff) override
   {
     if(_lastStateLed != onOff)

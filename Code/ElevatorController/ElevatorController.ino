@@ -53,20 +53,20 @@ void setup()
   Serial.println();
 
   door.Begin();
-  elevator.Begin(log);
-  eBtn1.Begin(23,48,log);
-  eBtn2.Begin(24,47,log);
-  eBtn3.Begin(25,46,log); 
-  eBtn4.Begin(26,45,log);
-  encoder.Begin(log);
-  fBtn1Up.Begin(log);
-  fBtn2Up.Begin(log);
-  fBtn2Down.Begin(log);
-  fBtn3Up.Begin(log);
-  fBtn3Down.Begin(log);
-  fBtn4Down.Begin(log);
+  elevator.Begin();
+  eBtn1.Begin(23,48);
+  eBtn2.Begin(24,47);
+  eBtn3.Begin(25,46); 
+  eBtn4.Begin(26,45);
+  encoder.Begin();
+  fBtn1Up.Begin();
+  fBtn2Up.Begin();
+  fBtn2Down.Begin();
+  fBtn3Up.Begin();
+  fBtn3Down.Begin();
+  fBtn4Down.Begin();
   liftMotor.Begin();
-  load.Begin(log);
+  load.Begin();
   queue.Begin();
 }
 

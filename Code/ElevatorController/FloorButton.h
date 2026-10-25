@@ -7,7 +7,6 @@ This class represents a button used to request the elevator from a specific floo
 class FloorButton : public Button
 {
 private:
-  bool _log;
   char _key;
   const int _floor;
   const char* _direction;
@@ -24,17 +23,15 @@ public:
     _direction(direction) 
     {}
 
-  void Begin(bool log) 
-  {
-    _log =log;
-    if(_log == 1)
-    {
-        Serial.print("Floor button ");
-        Serial.print(_floor);
-        Serial.print(" ");
-        Serial.print(_direction);
-        Serial.println(" initialized");
-    }
+  // Initializes the elevator button
+  void Begin() 
+  {    
+    Serial.print("Floor button ");
+    Serial.print(_floor);
+    Serial.print(" ");
+    Serial.print(_direction);
+    Serial.println(" initialized");
+    
     buttonLocation = _floor;
     if (strcmp(_direction, "up") == 0) 
     {
@@ -46,27 +43,24 @@ public:
     }
   };
 
+  // Returns the current status of the floor button.
   bool GetStatus(char pressedKey) 
   {
     if (pressedKey == _key) 
     {
-      if(_log)
-      {
-        Serial.print("Floor ");
-        Serial.print(_floor);
-        Serial.print(" ");
-        Serial.print(_direction);
-        Serial.println(" pressed");
-      }
+      Serial.print("Floor ");
+      Serial.print(_floor);
+      Serial.print(" ");
+      Serial.print(_direction);
+      Serial.println(" pressed");
       isPressed = true;
-      //SetButtonLight(true); // to be added by queue, not here    
       return isPressed;
     }
-    //SetButtonLight(false); // to be removed from queue, not here
     isPressed = false;
     return false;
   }
 
+  // Turns the button light on or off.
   void SetButtonLight(bool onOff) override
   {
     if(_lastStateLed != onOff)

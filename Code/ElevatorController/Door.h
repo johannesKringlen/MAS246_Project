@@ -17,7 +17,7 @@ class Door
   int _delayStep;
 
   public:
-  // Initialize the stepper motor
+  // Initializes the stepper motor
   void Begin()
   {
     pinMode(pinEnableA, OUTPUT);

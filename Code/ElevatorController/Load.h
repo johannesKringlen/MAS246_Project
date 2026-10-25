@@ -5,7 +5,6 @@ This class handle the load sensor.
 
 int _potValue = 0;
 static const int _pinPot = A0; // Analog input 0
-bool _log;
 int _lastWeight = 0;
 
 class Load
@@ -14,16 +13,14 @@ class Load
   int weight;
   bool overload;
 
-  void Begin(bool log)
+  // Initialiazes the load sensor
+  void Begin()
   {
-    _log = log;
     overload = false;
-    if(_log == 1)
-    {
-      Serial.println("Load sensor initialized");
-    }
+    Serial.println("Load sensor initialized");
   };
 
+  // Returns the elevator weight
   int GetStatus()
   {
     _potValue = analogRead(_pinPot);

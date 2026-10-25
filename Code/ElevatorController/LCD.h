@@ -7,7 +7,6 @@ This class handles the communication to LCd display.
 class LCD
 {
   private:
-    bool _log;
     static const int lcd_RS = 41;
     static const int lcd_EN = 40;
     static const int lcd_D4 = 37;
@@ -23,31 +22,31 @@ class LCD
         : lcd(lcd_RS, lcd_EN, lcd_D4, lcd_D5, lcd_D6, lcd_D7)
     {
     }
-    
-  void Begin(bool log)
+
+  // Initializes the LCD.  
+  void Begin()
   {
-    _log =log;
     pinMode(lcd_BackLight, OUTPUT);    
     BackLight(1);
     lcd.begin(16,2);
     Clear();  
-    if(_log == 1)
-    {
-      Serial.println("LCD initialized");
-    }
+    Serial.println("LCD initialized");
   };
 
+  // Clears the LCD.
   void Clear()
   {
     lcd.clear();  
   }
 
+  // Writes the specified text to the selected row.
   void WriteToRow(int rowNr, String text)
   {
     lcd.setCursor(0,rowNr);
     lcd.print(text);
   }
 
+  // Turns the backlight on or off.
   void BackLight(bool OnOff)
   {
     digitalWrite(lcd_BackLight, OnOff);
