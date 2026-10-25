@@ -6,20 +6,18 @@ const int QUEUE_SIZE = 4;
 class Queue
 {
   private:
-  bool _log;
   int _queueCount = 0;
-
 
   public:
   bool isEmpty;
   int elevatorQueue[QUEUE_SIZE];
 
-  void Begin(bool log)
+  void Begin()
   {
-    _log = log;
     isEmpty = true;
   };
 
+  // Adds a new floor request to the queue in sorted order if it isn’t already present.
   bool AddToQueue(int floorNr)
   {
     String tmpString="";
@@ -65,55 +63,109 @@ class Queue
     _queueCount++;
     tmpString += " added to queue";
     Serial.println(tmpString);
-    printQueue();
+    PrintQueue();
     isEmpty = false;
     return true;
   }
 
+  // Removes the request floor from queue if it is present.
   bool RemoveFromQueue(int floorNr)
   {
-  for (int i = 0; i < _queueCount; i++)
-  {
-    if (elevatorQueue[i] == floorNr)
+    for (int i = 0; i < _queueCount; i++)
     {
-      // Shift all following floors one position to the left
-      for (int j = i; j < _queueCount - 1; j++)
+      if (elevatorQueue[i] == floorNr)
       {
-        elevatorQueue[j] = elevatorQueue[j + 1];
-      }
+        // Shift all following floors one position to the left
+        for (int j = i; j < _queueCount - 1; j++)
+        {
+          elevatorQueue[j] = elevatorQueue[j + 1];
+        }
 
-      _queueCount--;
+        _queueCount--;
 
-      Serial.print("Floor ");
-      Serial.print(floorNr);
-      Serial.println(" removed from queue");
-      printQueue();
-      if(_queueCount == 0)
-      {
-        isEmpty = true;
+        Serial.print("Floor ");
+        Serial.print(floorNr);
+        Serial.println(" removed from queue");
+        PrintQueue();
+        if(_queueCount == 0)
+        {
+          isEmpty = true;
+        }
+        return true;
       }
-      return true;
     }
+    Serial.print("Floor ");
+    Serial.print(floorNr);
+    Serial.println(" was not found in queue");
+    return false;
   }
 
-  Serial.print("Floor ");
-  Serial.print(floorNr);
-  Serial.println(" was not found in queue");
-
-  return false;
-  }
-
-  int GetFromQueue()
+  //Return the next floor using the queue, current floor, and last direction.
+  int GetNextFloor(int lastDir, int actFloor)
   {
-    // Some code to get next destination from queue
+    int nextFloor = 0;
+    if (!isEmpty)
+    {
+      if (lastDir == 1)  // Going up
+      {
+        // Find the nearest floor above.
+        for (int i = 0; i < _queueCount; i++)
+        {
+          int floor = elevatorQueue[i];
+          if (floor > actFloor)
+          {
+            nextFloor = floor;
+            return nextFloor;
+          }
+        }
+
+        // If no floor is above, turn around and choose the highest floor below.
+        if (nextFloor == 0)
+        {
+          for (int i = _queueCount - 1; i >= 0; i--)
+          {
+            int floor = elevatorQueue[i];
+            if (floor < actFloor)
+            {
+              nextFloor = floor;
+              return nextFloor;
+            }
+          }
+        }
+      }
+      else  // Going down
+      {
+        // Find the nearest floor below by scanning from highest to lowest.
+        for (int i = _queueCount - 1; i >= 0; i--)
+        {
+          int floor = elevatorQueue[i];
+          if (floor < actFloor)
+          {
+            nextFloor = floor;
+            return nextFloor;
+          }
+        }
+
+        // If no floor is below, turn around and choose the lowest floor above.
+        if (nextFloor == 0)
+        {
+          for (int i = 0; i < _queueCount; i++)
+          {
+            int floor = elevatorQueue[i];
+            if (floor > actFloor)
+            {
+              nextFloor = floor;
+              return nextFloor;
+            }
+          }
+        }
+      }
+    }
+    return nextFloor;
   }
 
-  int GetCount()
-  {
-    return _queueCount;
-  }
-
-  void printQueue() 
+  // Prints the current queue to the serial monitor.
+  void PrintQueue() 
   {
     Serial.print("The existing queue is: ");
     if (_queueCount == 0) 

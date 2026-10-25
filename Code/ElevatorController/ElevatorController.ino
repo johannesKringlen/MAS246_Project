@@ -4,7 +4,7 @@ This is the main file
 */
 
 #include "Brake.h"
-#include "DoorMotor.h"
+#include "Door.h"
 #include "Elevator.h" 
 #include "ElevatorButton.h"
 #include "Encoder.h"
@@ -14,7 +14,7 @@ This is the main file
 #include "Queue.h"
 
 
-DoorMotor doorMotor;
+Door door;
 Elevator elevator;
 ElevatorButton eBtn1;
 ElevatorButton eBtn2;
@@ -52,7 +52,7 @@ void setup()
   delay(1500);
   Serial.println();
 
-  doorMotor.Begin(log);
+  door.Begin();
   elevator.Begin(log);
   eBtn1.Begin(23,48,log);
   eBtn2.Begin(24,47,log);
@@ -67,7 +67,7 @@ void setup()
   fBtn4Down.Begin(log);
   liftMotor.Begin();
   load.Begin(log);
-  queue.Begin(log);
+  queue.Begin();
 }
 
 void loop()
@@ -87,72 +87,7 @@ void CheckButtons()
 // Chooses the next floor using the queue, current floor, and last direction.
 void DecideNextFloor()
 {
-  nextFloor = 0;
-
-  if (!queue.isEmpty)
-  {
-    int queueCount = queue.GetCount();
-
-    if (elevator.lastDirection == 1)  // Going up
-    {
-      // Find the nearest floor above.
-      for (int i = 0; i < queueCount; i++)
-      {
-        int floor = queue.elevatorQueue[i];
-
-        if (floor > elevator.currentFloor)
-        {
-          nextFloor = floor;
-          break;
-        }
-      }
-
-      // If no floor is above, turn around and choose the highest floor below.
-      if (nextFloor == 0)
-      {
-        for (int i = queueCount - 1; i >= 0; i--)
-        {
-          int floor = queue.elevatorQueue[i];
-
-          if (floor < elevator.currentFloor)
-          {
-            nextFloor = floor;
-            break;
-          }
-        }
-      }
-    }
-    else  // Going down
-    {
-      // Find the nearest floor below by scanning from highest to lowest.
-      for (int i = queueCount - 1; i >= 0; i--)
-      {
-        int floor = queue.elevatorQueue[i];
-
-        if (floor < elevator.currentFloor)
-        {
-          nextFloor = floor;
-          break;
-        }
-      }
-
-      // If no floor is below, turn around and choose the lowest floor above.
-      if (nextFloor == 0)
-      {
-        for (int i = 0; i < queueCount; i++)
-        {
-          int floor = queue.elevatorQueue[i];
-
-          if (floor > elevator.currentFloor)
-          {
-            nextFloor = floor;
-            break;
-          }
-        }
-      }
-    }
-  }
-
+  nextFloor = queue.GetNextFloor(elevator.lastDirection, elevator.currentFloor);
   if (nextFloor != 0)
   {
     GetTarget(nextFloor);
@@ -311,7 +246,7 @@ void DoorSequence(bool firstTimeEl)
 
       lcd.WriteToRow(1, "Opening door    ");
       Serial.println("Opening door");    
-      doorMotor.OpenDoor(12, 10000);
+      door.Open();
       doorStatus = 3;
       break;
     }  
@@ -327,7 +262,7 @@ void DoorSequence(bool firstTimeEl)
     {
       lcd.WriteToRow(1, "Closing door    ");
       Serial.println("Closing door");
-      doorMotor.CloseDoor(12, 10000);
+      door.Close();
       doorStatus = 1;   
       lcd.WriteToRow(1, "Door closed     ");
       Serial.println("Door closed");

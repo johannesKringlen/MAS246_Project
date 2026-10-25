@@ -13,9 +13,5 @@ class Button
   bool isPressed{0};
   bool isIlluminated{0};
   
-  //virtual bool GetStatus() = 0;
-
-  //virtual void Begin(int inputPin, int outputPin,  bool log);
-
   virtual void SetButtonLight(bool onOff) = 0;
 };
