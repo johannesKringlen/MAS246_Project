@@ -4,6 +4,7 @@ This class represents a button used to select a destination floor inside the ele
 #include "HardwareSerial.h"
 #include "Arduino.h"
 #include "Button.h"
+#include "Logger.h"
 
 class ElevatorButton : public Button
 {
@@ -13,7 +14,7 @@ class ElevatorButton : public Button
   bool _lastStateBtn;
   bool _lastStateLed;
   bool _isPressed;
-
+  String _tempString;
 
   public:
   int floorNum;
@@ -26,9 +27,14 @@ class ElevatorButton : public Button
     _outputPin=outputPin;
     pinMode(_inputPin, INPUT);
     pinMode(_outputPin, OUTPUT);
-    Serial.print("Elevator button ");
-    Serial.print(floorNum);
-    Serial.println(" initialized");
+    _tempString = "Elevator button ";
+    _tempString += String(floorNum);
+    _tempString += " initialized";
+    logMessage(_tempString);    
+
+    //Serial.print("Elevator button ");
+    //Serial.print(floorNum);
+    //Serial.println(" initialized");
   };
 
   // Returns the current status of the elevator button.
@@ -40,9 +46,14 @@ class ElevatorButton : public Button
 
         if(_isPressed == 1)
         {
-          Serial.print("Elevator button ");
-          Serial.print(_inputPin-22);
-          Serial.println(" has been pressed");
+          _tempString = "Elevator button ";
+          _tempString += String(_inputPin-22);
+          _tempString += " has been pressed";
+          logMessage(_tempString); 
+          
+          //Serial.print("Elevator button ");
+          //Serial.print(_inputPin-22);
+          //Serial.println(" has been pressed");
           isPressed = true;
           _lastStateBtn = _isPressed;
           return true;         
@@ -67,17 +78,24 @@ class ElevatorButton : public Button
     if(_lastStateLed != onOff)
     {
       digitalWrite(_outputPin, onOff);
-      Serial.print("Elevator button ");
-      Serial.print(_inputPin-22);
-      Serial.print(" light");
+      _tempString = "Elevator button ";
+      _tempString += String(_inputPin-22);
+      _tempString += " light";
+
+      //Serial.print("Elevator button ");
+      //Serial.print(_inputPin-22);
+      //Serial.print(" light");
       if(onOff)
       {
-        Serial.println(" on");        
+        //Serial.println(" on");     
+        _tempString += " on";   
       }
       else 
       {
-        Serial.println(" off");
+        //Serial.println(" off");
+        _tempString += " off";
       }
+      logMessage(_tempString); 
     }
     isIlluminated = onOff;
     _lastStateLed = onOff;

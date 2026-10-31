@@ -3,7 +3,8 @@ This class handles the communication to LCd display.
 */
 
 #include "LiquidCrystal.h"
-    
+#include "Logger.h"
+
 class LCD
 {
   private:
@@ -14,7 +15,7 @@ class LCD
     static const int lcd_D6 = 35;
     static const int lcd_D7 = 34;
     static const int lcd_BackLight = 4;
-
+    String _tempString;
     LiquidCrystal lcd;
 
   public:
@@ -30,7 +31,9 @@ class LCD
     BackLight(1);
     lcd.begin(16,2);
     Clear();  
-    Serial.println("LCD initialized");
+    _tempString = "LCD initialized";
+    logMessage(_tempString); 
+    //Serial.println("LCD initialized");
   };
 
   // Clears the LCD.

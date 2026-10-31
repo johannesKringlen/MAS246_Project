@@ -2,13 +2,16 @@
 /*Load
 This class handle the load sensor.
 */
-
-int _potValue = 0;
-static const int _pinPot = A0; // Analog input 0
-int _lastWeight = 0;
+#include "Logger.h"
 
 class Load
 {
+  private:
+  int _potValue = 0;
+  static const int _pinPot = A0; // Analog input 0
+  int _lastWeight = 0;
+  String _tempString;
+
   public:
   int weight;
   bool overload;
@@ -17,7 +20,8 @@ class Load
   void Begin()
   {
     overload = false;
-    Serial.println("Load sensor initialized");
+    logMessage("Load sensor initialized"); 
+    //Serial.println("Load sensor initialized");
   };
 
   // Returns the elevator weight
@@ -32,22 +36,25 @@ class Load
       overload = newOverload;
       if(overload)
       {
-        Serial.println("Elevator too heavy");
+        logMessage("Elevator too heavy"); 
+        //Serial.println("Elevator too heavy");
         overload = true;
       }
       else 
       {
-        Serial.println("Weight ok, it is below allowed limit");
+        logMessage("Weight ok, it is below allowed limit"); 
+        //Serial.println("Weight ok, it is below allowed limit");
         overload = false;
       }     
     }
 
     if (overload && _lastWeight!=weight) 
     {
-      String tmpString = "Passengers total weight ";
-      tmpString += String(weight);
-      tmpString += " kg";
-      Serial.println(tmpString);
+      _tempString = "Passengers total weight ";
+      _tempString += String(weight);
+      _tempString += " kg";
+      logMessage(_tempString); 
+      //Serial.println(_tempString);
     }
     _lastWeight = weight;
     delay(200);
