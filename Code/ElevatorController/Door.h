@@ -2,6 +2,7 @@
 This class controls opening and closing the elevator doors.
 */
 #include "dac.h"
+#include "Logger.h"
 
 class Door
 {
@@ -15,6 +16,7 @@ class Door
   static const int stepsPerRev = 200; // defining steps per revolution (360 degrees)
   int _stepsToMove;
   int _delayStep;
+  String _tempString;
 
   public:
   // Initializes the stepper motor
@@ -26,7 +28,8 @@ class Door
     pinMode(pinPhaseB, OUTPUT);
     dac_init();
     set_dac(4095,4095); //1A per motor phase
-    Serial.println("Door motor initialized");
+    logMessage("Door motor initialized"); 
+    //Serial.println("Door motor initialized");
     _stepsToMove = 12;
     _delayStep = 10000;
   };

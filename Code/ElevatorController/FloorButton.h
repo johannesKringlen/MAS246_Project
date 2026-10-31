@@ -3,6 +3,7 @@ This class represents a button used to request the elevator from a specific floo
 */
 
 #include "Button.h"
+#include "Logger.h"
 
 class FloorButton : public Button
 {
@@ -12,6 +13,7 @@ private:
   const char* _direction;
   bool _lastStateLed;
   bool _isPressed;
+  String _tempString;
 
 public:
   int buttonLocation;
@@ -26,11 +28,18 @@ public:
   // Initializes the elevator button
   void Begin() 
   {    
-    Serial.print("Floor button ");
-    Serial.print(_floor);
-    Serial.print(" ");
-    Serial.print(_direction);
-    Serial.println(" initialized");
+    _tempString = "Floor button ";
+    _tempString += String(_floor);
+    _tempString += " ";
+    _tempString += _direction;
+    _tempString += " initialized";
+    logMessage(_tempString);
+    
+    //Serial.print("Floor button ");
+    //Serial.print(_floor);
+    //Serial.print(" ");
+    //Serial.print(_direction);
+    //Serial.println(" initialized");
     
     buttonLocation = _floor;
     if (strcmp(_direction, "up") == 0) 
@@ -48,11 +57,18 @@ public:
   {
     if (pressedKey == _key) 
     {
-      Serial.print("Floor ");
-      Serial.print(_floor);
-      Serial.print(" ");
-      Serial.print(_direction);
-      Serial.println(" pressed");
+      _tempString = "Floor button ";
+      _tempString += String(_floor);
+      _tempString += " ";
+      _tempString += _direction;
+      _tempString += " pressed";
+      logMessage(_tempString);
+
+      //Serial.print("Floor ");
+      //Serial.print(_floor);
+      //Serial.print(" ");
+      //Serial.print(_direction);
+      //Serial.println(" pressed");
       isPressed = true;
       return isPressed;
     }
@@ -65,19 +81,29 @@ public:
   {
     if(_lastStateLed != onOff)
     {
-      Serial.print("Floor ");
-      Serial.print(_floor);
-      Serial.print(" button ");
-      Serial.print(_direction);
-      Serial.print(" light");
+      _tempString = "Floor ";
+      _tempString += String(_floor);
+      _tempString += " button ";
+      _tempString += _direction;
+      _tempString += " light";
+      
+      
+      //Serial.print("Floor ");
+      //Serial.print(_floor);
+      //Serial.print(" button ");
+      //Serial.print(_direction);
+      //Serial.print(" light");
       if(onOff)
       {
-        Serial.println(" on");    
+        //Serial.println(" on");    
+        _tempString +=" on";
       }
       else 
       {
-        Serial.println(" off");
+        //Serial.println(" off");
+        _tempString +=" off";
       }
+      logMessage(_tempString);
     }
     isIlluminated = onOff;
     _lastStateLed = onOff;

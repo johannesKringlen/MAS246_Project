@@ -11,6 +11,7 @@ This is the main file
 #include "FloorButton.h"
 #include "LiftMotor.h"
 #include "Load.h"
+#include "Logger.h"
 #include "Queue.h"
 
 
@@ -38,6 +39,7 @@ long targetPos;
 bool firstTimeEl;
 bool firstTimeDoor;
 bool startupDoorMessage;
+String _tempString;
 
 void setup()
 {
@@ -139,9 +141,10 @@ void MainSequence()
       if (firstTimeEl) 
       {
         elevator.currentFloor = nextFloor;
-        String tempString = "Elevator stopped at floor ";
-        tempString += String(elevator.currentFloor);
-        Serial.println(tempString);
+        _tempString = "Elevator stopped at floor ";
+        _tempString += String(elevator.currentFloor);
+        logMessage(_tempString); 
+        //Serial.println(_tempString);
         String tempRow = "Stop at floor ";
         tempRow += String(elevator.currentFloor);
         lcd.WriteToRow(0, tempRow);
@@ -170,7 +173,8 @@ void MainSequence()
     { 
       if (firstTimeEl) 
       {
-        Serial.println("Elevator going up");
+        logMessage("Elevator going up"); 
+        //Serial.println("Elevator going up");
         String row = "Moving up       ";  
         lcd.WriteToRow(0, row);
         firstTimeEl = false;
@@ -190,7 +194,8 @@ void MainSequence()
     { 
       if (firstTimeEl) 
       {
-        Serial.println("Elevator going down");
+        logMessage("Elevator going down"); 
+        //Serial.println("Elevator going down");
         String row = "Moving down     ";
         lcd.WriteToRow(0, row);
         firstTimeEl = false;
@@ -223,7 +228,8 @@ void DoorSequence(bool firstTimeEl)
       if (startupDoorMessage)
       {
         lcd.WriteToRow(1, "Door closed     ");
-        Serial.println("Door closed");
+        logMessage("Door closed");
+        //Serial.println("Door closed");
         startupDoorMessage = false;
       }
 
@@ -231,7 +237,8 @@ void DoorSequence(bool firstTimeEl)
       if (firstTimeDoor) 
       {
         lcd.WriteToRow(1, "Door closed     ");
-        Serial.println("Door closed");
+        logMessage("Door closed"); 
+        //Serial.println("Door closed");
         doorStatus = 2;
         firstTimeDoor = false;
       }      
@@ -245,7 +252,8 @@ void DoorSequence(bool firstTimeEl)
       }
 
       lcd.WriteToRow(1, "Opening door    ");
-      Serial.println("Opening door");    
+      logMessage("Opening door"); 
+      //Serial.println("Opening door");    
       door.Open();
       doorStatus = 3;
       break;
@@ -253,7 +261,8 @@ void DoorSequence(bool firstTimeEl)
     case 3:
     {
       lcd.WriteToRow(1, "Door open       ");
-      Serial.println("Door open");
+      logMessage("Door open"); 
+      //Serial.println("Door open");
       CheckLoad();
       doorStatus = 4;
       break;
@@ -261,11 +270,13 @@ void DoorSequence(bool firstTimeEl)
     case 4:
     {
       lcd.WriteToRow(1, "Closing door    ");
-      Serial.println("Closing door");
+      logMessage("Closing door");
+      //Serial.println("Closing door");
       door.Close();
       doorStatus = 1;   
       lcd.WriteToRow(1, "Door closed     ");
-      Serial.println("Door closed");
+      logMessage("Door closed");
+      //Serial.println("Door closed");
       delay(2000);
       break;
     }  

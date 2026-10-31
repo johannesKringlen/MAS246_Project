@@ -4,6 +4,7 @@
 /*LiftMotor
 This class controls the elevator’s vertical movement.
 */
+#include "Logger.h"
 
 class LiftMotor
 {
@@ -12,6 +13,7 @@ class LiftMotor
   const int enablePin = 7; //
   const int refSpeedPin = 6; // PWM signal input in bipolar mode
   int deadband;
+  String _tempString;
 
   public:
   // Initializes the DC motor used for the lift
@@ -20,14 +22,16 @@ class LiftMotor
     TCCR4B = TCCR4B & 0b11111000 | 0x01; // set PWM frequency to 32 kHz
     pinMode(enablePin, OUTPUT);
     pinMode(refSpeedPin, OUTPUT);
+    logMessage("Lift motor initialized"); 
   }
 
   // Moves the elevator to the target position
   void Move(int refSpeed, Encoder& encoder, int target)
   {
-    String temp = "Encoder position 1 = ";
-    temp += String(encoder.GetStatus());
-    Serial.println(temp);
+    _tempString = "Encoder position 1 = ";
+    _tempString += String(encoder.GetStatus());
+    logMessage(_tempString); 
+    //Serial.println(_tempString);
 
     refSpeed = constrain(refSpeed, -100, 100);
     //enable or disable motors
@@ -67,15 +71,17 @@ class LiftMotor
       analogWrite(refSpeedPin, pwm);
     }
 
-    temp = "Encoder position 2 = ";
-    temp += String(encoder.GetStatus());
-    Serial.println(temp);
+    _tempString = "Encoder position 2 = ";
+    _tempString += String(encoder.GetStatus());
+    logMessage(_tempString); 
+    //Serial.println(_tempString);
     analogWrite(refSpeedPin, 128);
     delay(500);
 
-    temp = "Encoder position 3 = ";
-    temp += String(encoder.GetStatus());
-    Serial.println(temp);
+    _tempString = "Encoder position 3 = ";
+    _tempString += String(encoder.GetStatus());
+    logMessage(_tempString); 
+    //Serial.println(_tempString);
   }
      
 };
