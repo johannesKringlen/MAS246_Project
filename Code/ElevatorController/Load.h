@@ -21,7 +21,6 @@ class Load
   {
     overload = false;
     logMessage("Load sensor initialized"); 
-    //Serial.println("Load sensor initialized");
   };
 
   // Returns the elevator weight
@@ -37,13 +36,11 @@ class Load
       if(overload)
       {
         logMessage("Elevator too heavy"); 
-        //Serial.println("Elevator too heavy");
         overload = true;
       }
       else 
       {
         logMessage("Weight ok, it is below allowed limit"); 
-        //Serial.println("Weight ok, it is below allowed limit");
         overload = false;
       }     
     }
@@ -54,7 +51,6 @@ class Load
       _tempString += String(weight);
       _tempString += " kg";
       logMessage(_tempString); 
-      //Serial.println(_tempString);
     }
     _lastWeight = weight;
     delay(200);
