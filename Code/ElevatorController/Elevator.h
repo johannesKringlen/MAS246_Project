@@ -3,6 +3,7 @@ This class represents the elevator’s current state, including its floor, direc
 */
 
 #include "LCD.h"
+#include "Logger.h"
 
 LCD lcd;
 
@@ -26,7 +27,7 @@ class Elevator
     actualDirection = 1; 
     lastDirection = 2;
     isMoving = false;
-
+    logMessage("Elevator Initialized");
     lcd.Begin();
   };
 };

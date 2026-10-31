@@ -40,6 +40,9 @@ bool firstTimeEl;
 bool firstTimeDoor;
 bool startupDoorMessage;
 String _tempString;
+int _stepMoved;
+const int STEPS = 24;
+
 
 void setup()
 {
@@ -50,6 +53,7 @@ void setup()
   firstTimeEl = true;
   firstTimeDoor = false;
   startupDoorMessage = true;
+  _stepMoved = STEPS;
   Serial.begin(9600);
   delay(1500);
   Serial.println();
@@ -144,7 +148,6 @@ void MainSequence()
         _tempString = "Elevator stopped at floor ";
         _tempString += String(elevator.currentFloor);
         logMessage(_tempString); 
-        //Serial.println(_tempString);
         String tempRow = "Stop at floor ";
         tempRow += String(elevator.currentFloor);
         lcd.WriteToRow(0, tempRow);
@@ -174,7 +177,6 @@ void MainSequence()
       if (firstTimeEl) 
       {
         logMessage("Elevator going up"); 
-        //Serial.println("Elevator going up");
         String row = "Moving up       ";  
         lcd.WriteToRow(0, row);
         firstTimeEl = false;
@@ -195,7 +197,6 @@ void MainSequence()
       if (firstTimeEl) 
       {
         logMessage("Elevator going down"); 
-        //Serial.println("Elevator going down");
         String row = "Moving down     ";
         lcd.WriteToRow(0, row);
         firstTimeEl = false;
@@ -229,7 +230,6 @@ void DoorSequence(bool firstTimeEl)
       {
         lcd.WriteToRow(1, "Door closed     ");
         logMessage("Door closed");
-        //Serial.println("Door closed");
         startupDoorMessage = false;
       }
 
@@ -238,7 +238,6 @@ void DoorSequence(bool firstTimeEl)
       {
         lcd.WriteToRow(1, "Door closed     ");
         logMessage("Door closed"); 
-        //Serial.println("Door closed");
         doorStatus = 2;
         firstTimeDoor = false;
       }      
@@ -246,15 +245,21 @@ void DoorSequence(bool firstTimeEl)
     }
     case 2:
     {
-      if (queue.RemoveFromQueue(elevator.currentFloor))
+      if (_stepMoved==STEPS) 
       {
-        ClearFloorLights(elevator.currentFloor);
+        if (queue.RemoveFromQueue(elevator.currentFloor))
+        {
+          ClearFloorLights(elevator.currentFloor);
+        }
       }
-
       lcd.WriteToRow(1, "Opening door    ");
       logMessage("Opening door"); 
-      //Serial.println("Opening door");    
-      door.Open();
+      while (_stepMoved>0) 
+      {
+        door.Open();
+        _stepMoved--;
+      }      
+
       doorStatus = 3;
       break;
     }  
@@ -262,21 +267,40 @@ void DoorSequence(bool firstTimeEl)
     {
       lcd.WriteToRow(1, "Door open       ");
       logMessage("Door open"); 
-      //Serial.println("Door open");
       CheckLoad();
       doorStatus = 4;
       break;
     }  
     case 4:
     {
+      bool closeComplete = true;
       lcd.WriteToRow(1, "Closing door    ");
       logMessage("Closing door");
-      //Serial.println("Closing door");
-      door.Close();
-      doorStatus = 1;   
-      lcd.WriteToRow(1, "Door closed     ");
-      logMessage("Door closed");
-      //Serial.println("Door closed");
+      _stepMoved = 0;
+      while (_stepMoved<STEPS) 
+      {
+        if (!GetStatusFloorBtn()) 
+        {
+          door.Close();
+          _stepMoved++;
+        }
+        else  
+        {
+          closeComplete = false;
+          break;
+        }
+      }
+      if (closeComplete) 
+      {
+        doorStatus = 1;   
+        lcd.WriteToRow(1, "Door closed     ");
+        logMessage("Door closed");
+      }      
+      else  
+      {
+        logMessage("Close sequence stopped");
+        doorStatus = 2;   
+      }
       delay(2000);
       break;
     }  
@@ -286,8 +310,9 @@ void DoorSequence(bool firstTimeEl)
 }
 
 // Checks floor buttons, queues requested floors, and turns on their button lights.
-void GetStatusFloorBtn()
+bool GetStatusFloorBtn()
 {
+  bool sameFloorSelected = false;
   int tempFloor;
   int actualFloor = elevator.currentFloor;
   if (Serial.available() > 0) 
@@ -302,6 +327,10 @@ void GetStatusFloorBtn()
         queue.AddToQueue(tempFloor);
         fBtn1Up.SetButtonLight(true);     
       }
+      else 
+      {
+        sameFloorSelected = true;
+      }
     }
 
     if (fBtn2Up.GetStatus(key)) 
@@ -311,6 +340,10 @@ void GetStatusFloorBtn()
       {
         queue.AddToQueue(tempFloor);
         fBtn2Up.SetButtonLight(true);     
+      }
+      else 
+      {
+        sameFloorSelected = true;
       }
     }
 
@@ -322,6 +355,10 @@ void GetStatusFloorBtn()
         queue.AddToQueue(tempFloor);
         fBtn3Up.SetButtonLight(true);     
       }
+      else 
+      {
+        sameFloorSelected = true;
+      }      
     }
 
     if (fBtn2Down.GetStatus(key)) 
@@ -332,6 +369,10 @@ void GetStatusFloorBtn()
         queue.AddToQueue(tempFloor);
         fBtn2Down.SetButtonLight(true);     
       }
+      else 
+      {
+        sameFloorSelected = true;
+      }      
     }
 
     if (fBtn3Down.GetStatus(key)) 
@@ -342,6 +383,10 @@ void GetStatusFloorBtn()
         queue.AddToQueue(tempFloor);
         fBtn3Down.SetButtonLight(true);     
       }
+      else 
+      {
+        sameFloorSelected = true;
+      }      
     }
     
     if (fBtn4Down.GetStatus(key)) 
@@ -352,8 +397,13 @@ void GetStatusFloorBtn()
         queue.AddToQueue(tempFloor);
         fBtn4Down.SetButtonLight(true);     
       }
+      else 
+      {
+        sameFloorSelected = true;
+      }      
     }
   }
+  return sameFloorSelected;
 }
 
 // Checks elevator buttons, queues requested floors, and turns on their button lights.

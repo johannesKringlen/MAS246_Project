@@ -32,13 +32,11 @@ class Queue
     {
       _tempString += " outside allowed range";
       logMessage(_tempString); 
-      //Serial.println(_tempString);
       return false;
     }
     if(_queueCount >= QUEUE_SIZE)
     {
       logMessage("The queue is full"); 
-      //Serial.println("The queue is full");
       return false;
     }
     // Don't add already existing floor in queue
@@ -47,8 +45,7 @@ class Queue
       if(elevatorQueue[i] == floorNr)
       {
         _tempString += " already in queue";
-        logMessage(_tempString); 
-        //Serial.println(_tempString);        
+        logMessage(_tempString);    
         return false;
       }
     }
@@ -69,7 +66,6 @@ class Queue
     _queueCount++;
     _tempString += " added to queue";
     logMessage(_tempString); 
-    //Serial.println(_tempString);
     PrintQueue();
     isEmpty = false;
     return true;
@@ -93,10 +89,7 @@ class Queue
         _tempString += String(floorNr);
         _tempString += " removed from queue";
         logMessage(_tempString); 
-        //Serial.print("Floor ");
-        //Serial.print(floorNr);        
-        //Serial.println(" removed from queue");
-        
+       
         PrintQueue();
         if(_queueCount == 0)
         {
@@ -109,10 +102,6 @@ class Queue
     _tempString += String(floorNr);
     _tempString += " was not found in queue";
     logMessage(_tempString);
-
-    //Serial.print("Floor ");
-    //Serial.print(floorNr);
-    //Serial.println(" was not found in queue");
     return false;
   }
 
@@ -184,26 +173,21 @@ class Queue
   void PrintQueue() 
   {
     _tempString = "The existing queue is: "; 
-    //Serial.print("The existing queue is: ");
     if (_queueCount == 0) 
     {
       _tempString += "empty";
       logMessage(_tempString);
-      //Serial.println("empty");
       return;
     }
 
     for (int i = 0; i < _queueCount; i++) 
     {
       _tempString += elevatorQueue[i];
-      //Serial.print(elevatorQueue[i]);
       if (i < _queueCount - 1) 
       {
         _tempString += ", ";
-        //Serial.print(", ");
       }
     }
     logMessage(_tempString);
-    //Serial.println();
   }
 };

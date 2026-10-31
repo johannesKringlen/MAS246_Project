@@ -31,9 +31,7 @@ class LCD
     BackLight(1);
     lcd.begin(16,2);
     Clear();  
-    _tempString = "LCD initialized";
-    logMessage(_tempString); 
-    //Serial.println("LCD initialized");
+    logMessage("LCD initialized"); 
   };
 
   // Clears the LCD.

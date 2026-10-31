@@ -29,16 +29,13 @@ class Door
     dac_init();
     set_dac(4095,4095); //1A per motor phase
     logMessage("Door motor initialized"); 
-    //Serial.println("Door motor initialized");
     _stepsToMove = 12;
     _delayStep = 10000;
   };
 
-  // Sequence to open the door
+  // Sequence to open the door one step
   void Open() 
   {
-    for(i = 0; i > -_stepsToMove; i--)
-    {
     digitalWrite(pinEnableA, HIGH); //STEP 8
     digitalWrite(pinPhaseA, HIGH);
     digitalWrite(pinEnableB, LOW);
@@ -86,14 +83,11 @@ class Door
     digitalWrite(pinEnableB, HIGH);
     digitalWrite(pinPhaseB, HIGH);
     delayMicroseconds (_delayStep);
-    }
   }  
 
-  // Sequence to close the door
+  // Sequence to close the door one step
   void Close() 
   {
-    for(i = 0; i < _stepsToMove; i++)
-    { 
     digitalWrite(pinEnableA, HIGH);  //STEP 1
     digitalWrite(pinPhaseA, HIGH);
     digitalWrite(pinEnableB, HIGH);
@@ -141,7 +135,6 @@ class Door
     digitalWrite(pinEnableB, LOW);
     digitalWrite(pinPhaseB, HIGH);
     delayMicroseconds (_delayStep);
-    }   
   }
 
 };

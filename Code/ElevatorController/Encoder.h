@@ -1,6 +1,9 @@
 /*Encoder
 This class measures the elevator’s speed and position.
 */
+
+#include "Logger.h"
+
 const int pinEncoderChA = 20; //D20
 const int pinEncoderChB = 21; //D21
 volatile int encoderPos = 0;
@@ -36,7 +39,7 @@ public:
       doSignalA,
       CHANGE
     );
-
+    logMessage("Encoder Initialized");
   }
 
   // Returns the encoder position

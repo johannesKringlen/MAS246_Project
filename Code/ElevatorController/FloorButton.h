@@ -34,13 +34,7 @@ public:
     _tempString += _direction;
     _tempString += " initialized";
     logMessage(_tempString);
-    
-    //Serial.print("Floor button ");
-    //Serial.print(_floor);
-    //Serial.print(" ");
-    //Serial.print(_direction);
-    //Serial.println(" initialized");
-    
+
     buttonLocation = _floor;
     if (strcmp(_direction, "up") == 0) 
     {
@@ -63,12 +57,6 @@ public:
       _tempString += _direction;
       _tempString += " pressed";
       logMessage(_tempString);
-
-      //Serial.print("Floor ");
-      //Serial.print(_floor);
-      //Serial.print(" ");
-      //Serial.print(_direction);
-      //Serial.println(" pressed");
       isPressed = true;
       return isPressed;
     }
@@ -86,21 +74,12 @@ public:
       _tempString += " button ";
       _tempString += _direction;
       _tempString += " light";
-      
-      
-      //Serial.print("Floor ");
-      //Serial.print(_floor);
-      //Serial.print(" button ");
-      //Serial.print(_direction);
-      //Serial.print(" light");
       if(onOff)
       {
-        //Serial.println(" on");    
         _tempString +=" on";
       }
       else 
       {
-        //Serial.println(" off");
         _tempString +=" off";
       }
       logMessage(_tempString);

@@ -31,10 +31,6 @@ class ElevatorButton : public Button
     _tempString += String(floorNum);
     _tempString += " initialized";
     logMessage(_tempString);    
-
-    //Serial.print("Elevator button ");
-    //Serial.print(floorNum);
-    //Serial.println(" initialized");
   };
 
   // Returns the current status of the elevator button.
@@ -50,10 +46,6 @@ class ElevatorButton : public Button
           _tempString += String(_inputPin-22);
           _tempString += " has been pressed";
           logMessage(_tempString); 
-          
-          //Serial.print("Elevator button ");
-          //Serial.print(_inputPin-22);
-          //Serial.println(" has been pressed");
           isPressed = true;
           _lastStateBtn = _isPressed;
           return true;         
@@ -81,18 +73,12 @@ class ElevatorButton : public Button
       _tempString = "Elevator button ";
       _tempString += String(_inputPin-22);
       _tempString += " light";
-
-      //Serial.print("Elevator button ");
-      //Serial.print(_inputPin-22);
-      //Serial.print(" light");
       if(onOff)
       {
-        //Serial.println(" on");     
         _tempString += " on";   
       }
       else 
       {
-        //Serial.println(" off");
         _tempString += " off";
       }
       logMessage(_tempString); 

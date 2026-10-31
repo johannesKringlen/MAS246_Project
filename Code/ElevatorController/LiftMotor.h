@@ -31,7 +31,6 @@ class LiftMotor
     _tempString = "Encoder position 1 = ";
     _tempString += String(encoder.GetStatus());
     logMessage(_tempString); 
-    //Serial.println(_tempString);
 
     refSpeed = constrain(refSpeed, -100, 100);
     //enable or disable motors
@@ -74,14 +73,12 @@ class LiftMotor
     _tempString = "Encoder position 2 = ";
     _tempString += String(encoder.GetStatus());
     logMessage(_tempString); 
-    //Serial.println(_tempString);
     analogWrite(refSpeedPin, 128);
     delay(500);
 
     _tempString = "Encoder position 3 = ";
     _tempString += String(encoder.GetStatus());
     logMessage(_tempString); 
-    //Serial.println(_tempString);
   }
      
 };
