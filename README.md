@@ -16,7 +16,7 @@ This repository contains the documents and source code used for the project.
 To run the elevator on All-in-One Servo Lab (AIOSL) [1] [2], download all the files from the `Code` folder.
 
 The elevator starts on floor 1 with the door closed and waits for a command. 
-The switches above the joystick represent the buttons on the control panel inside the elevator cabin.
+The switches labeled 1–4 above the joystick represent the buttons on the elevator cabin’s control panel.
 
 When a button for a different floor is pressed, that floor is added to the queue and its corresponding LED lights up. 
 If the queue is empty, the elevator moves to the requested floor immediately; otherwise, it follows the order of the queue.
