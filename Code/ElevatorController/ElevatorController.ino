@@ -137,9 +137,9 @@ void GetTarget(int nextFloor)
 // Runs the main sequence.
 void MainSequence()
 {
-  switch (elevatorStatus) //1 = Stop, 2 = Going up, 3 = Going down
+  switch (elevatorStatus)
   {
-    case 1:
+    case 1: // Stop
     {
       elevator.lastDirection = elevator.actualDirection;
       if (firstTimeEl) 
@@ -172,7 +172,7 @@ void MainSequence()
       }
       break;
     }
-    case 2:
+    case 2: // Going up
     { 
       if (firstTimeEl) 
       {
@@ -192,7 +192,7 @@ void MainSequence()
       firstTimeDoor = true;
       break;
     }
-    case 3:
+    case 3: // Going down
     { 
       if (firstTimeEl) 
       {
@@ -220,10 +220,9 @@ void MainSequence()
 // Runs the door sequence: opening, waiting, and closing.
 void DoorSequence(bool firstTimeEl)
 {
-  // 1 = Closed, 2 = Opening, 3 Open, 4 = Closing
   switch (doorStatus) 
   {
-    case 1:
+    case 1: // Closed
     {
       // First message at start up
       if (startupDoorMessage)
@@ -243,7 +242,7 @@ void DoorSequence(bool firstTimeEl)
       }      
       break;
     }
-    case 2:
+    case 2: // Opening
     {
       if (_stepMoved==STEPS) 
       {
@@ -255,7 +254,7 @@ void DoorSequence(bool firstTimeEl)
       lcd.WriteToRow(1, "Opening door    ");
       logMessage("Opening door"); 
       while (_stepMoved>0) 
-      {
+      {         
         door.Open();
         _stepMoved--;
       }      
@@ -263,7 +262,7 @@ void DoorSequence(bool firstTimeEl)
       doorStatus = 3;
       break;
     }  
-    case 3:
+    case 3: // Open
     {
       lcd.WriteToRow(1, "Door open       ");
       logMessage("Door open"); 
@@ -271,7 +270,7 @@ void DoorSequence(bool firstTimeEl)
       doorStatus = 4;
       break;
     }  
-    case 4:
+    case 4: // Closing
     {
       bool closeComplete = true;
       lcd.WriteToRow(1, "Closing door    ");
@@ -279,12 +278,12 @@ void DoorSequence(bool firstTimeEl)
       _stepMoved = 0;
       while (_stepMoved<STEPS) 
       {
-        if (!GetStatusFloorBtn()) 
+        if (!GetStatusFloorBtn() && !door.GetCollisionSensorStatus()) 
         {
           door.Close();
           _stepMoved++;
         }
-        else  
+        else
         {
           closeComplete = false;
           break;

@@ -9,6 +9,7 @@ class Door
   private:
   int i;
   // Stepper motor pins
+  static const int pinDoorSensor = 27; // D27 connected to SW5
   static const int pinEnableA = A15; // pin 69 connected to enable A
   static const int pinPhaseA = A14; // pin 68 connected to phase A
   static const int pinEnableB = A13; // pin 67 connected to enable B
@@ -22,6 +23,7 @@ class Door
   // Initializes the stepper motor
   void Begin()
   {
+    pinMode(pinDoorSensor, INPUT);
     pinMode(pinEnableA, OUTPUT);
     pinMode(pinEnableB, OUTPUT);
     pinMode(pinPhaseA, OUTPUT); 
@@ -135,6 +137,17 @@ class Door
     digitalWrite(pinEnableB, LOW);
     digitalWrite(pinPhaseB, HIGH);
     delayMicroseconds (_delayStep);
+  }
+
+  // Reads the door obstacle sensor
+  bool GetCollisionSensorStatus()
+  {
+    bool tmpDetected = digitalRead(pinDoorSensor);
+    if (tmpDetected) 
+    {
+      logMessage("Door obstacle detected"); 
+    }    
+    return tmpDetected;
   }
 
 };
