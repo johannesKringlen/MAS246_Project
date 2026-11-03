@@ -94,45 +94,13 @@ void CheckButtons()
 void DecideNextFloor()
 {
   nextFloor = queue.GetNextFloor(elevator.lastDirection, elevator.currentFloor);
-  if (nextFloor != 0)
-  {
-    GetTarget(nextFloor);
-  }
-  else 
+  if (nextFloor == 0)
   {
     nextFloor = elevator.currentFloor;
   }
 }
 
-// Sets the encoder target position for the selected floor.
-void GetTarget(int nextFloor)
-{
-    switch (nextFloor)
-    {
-      case 1:
-      {
-        targetPos = 0;
-        break;
-      }
-      case 2:
-      {
-        targetPos = 4096;
-        break;
-      }
-      case 3:
-      {
-        targetPos = 8192;
-        break;
-      }
-      case 4:
-      {
-        targetPos = 12288;
-        break;
-      }
-      default:
-      break;
-    }
-}
+
 
 // Runs the main sequence.
 void MainSequence()
@@ -184,7 +152,7 @@ void MainSequence()
         elevator.actualDirection = 1;
       }
       
-      liftMotor.Move(50, encoder, targetPos);
+      liftMotor.Move(encoder, nextFloor, elevator.currentFloor);
 
       elevator.currentFloor = 2;
       elevatorStatus = 1;      
@@ -204,7 +172,7 @@ void MainSequence()
         elevator.actualDirection = 2;
       }
     
-      liftMotor.Move(-50, encoder, targetPos);
+      liftMotor.Move(encoder,  nextFloor, elevator.currentFloor);
       elevator.currentFloor = 1;
       elevatorStatus = 1;
       firstTimeEl = true;
