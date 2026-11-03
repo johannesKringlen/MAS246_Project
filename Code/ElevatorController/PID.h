@@ -1,3 +1,5 @@
+#include "Arduino.h"
+#include "HardwareSerial.h"
 /*PID
   This class implements a PID controller.
 
@@ -6,31 +8,33 @@
   kd: derivative coefficient
 */
 
-class PID()
+class PID
 {
   private:
   float _kp;
   float _ki;
   float _kd;
+  float _dt;
   float _eInt = 0;
   float _ePrevious = 0;
-  unsigned long  _lastTime = millis();
+  unsigned long  _lastTime = 0;
   bool _firstCalculation = true;
+  unsigned long _actualTime = 0;
 
   public:
   PID(float kp, float ki, float kd)
+  : _kp(kp),
+  _ki(ki),
+  _kd(kd)
   {
-    _kp = kp;
-    _ki = ki;
-    _kd = kd;
     _lastTime = millis();
   }
 
   // Return the calculated PID value
   float CalculatePID(float setpoint, float actual)
   {
-    unsigned long actualTime = millis()
-    float dt =  (actualTime - lastTime)/1000.0f; // dt in seconds
+    _actualTime = millis();
+    _dt =  (_actualTime - _lastTime); // dt in seconds
 
     // Prevent division by zero during the first calculation
     if (_dt <= 0.0f)
@@ -45,16 +49,19 @@ class PID()
     float eDot = 0.0f;
     if (!_firstCalculation)
     {
-      eDot = (error - _ePrevious) / dt;
+      eDot = (error - _ePrevious) / _dt;
     }
 
     // Calculate the intergral
-    _eInt = _eInt + error*dt;
+    _eInt = _eInt + error*_dt;
 
     // Update values
-    _lastTime = actualTime;
+    _lastTime = _actualTime;
     _ePrevious = error;
-    
-    return _kp*error + _ki*_eInt + _kd*eDot;
+    _firstCalculation = false;
+
+    int temp = _kp*error + _ki*_eInt + _kd*eDot;
+
+    return temp;
   };
 };
