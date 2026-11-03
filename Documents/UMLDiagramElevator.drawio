@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Page-1" id="OhdA7uSnkM6YyDkwalY4">
-    <mxGraphModel dx="1414" dy="743" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1537" dy="808" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -310,7 +310,7 @@
             <mxPoint x="-9" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="8XfDSy3Mmf4ktHXWHJs0-7" edge="1" parent="1" source="rOe48yyIz8Z6_-_-ytiE-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;startArrow=none;startFill=0;exitX=0.996;exitY=0.315;exitDx=0;exitDy=0;exitPerimeter=0;" target="C8W1ZCtOX8AfJd7mVz7p-1">
+        <mxCell id="8XfDSy3Mmf4ktHXWHJs0-7" edge="1" parent="1" source="rOe48yyIz8Z6_-_-ytiE-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.996;exitY=0.315;exitDx=0;exitDy=0;exitPerimeter=0;" target="C8W1ZCtOX8AfJd7mVz7p-1">
           <mxGeometry relative="1" x="-0.5174" as="geometry">
             <mxPoint x="520" y="340" as="sourcePoint" />
           </mxGeometry>
@@ -398,6 +398,14 @@
         <mxCell id="PJTQYySVAEveqeKjP7AP-22" connectable="0" parent="hMHhCU8YzzfA8HTeXUAW-24" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;" value="1" vertex="1">
           <mxGeometry relative="1" x="0.3183" as="geometry">
             <mxPoint x="-14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IcZiIQiYiU_qD58I-Lys-1" parent="1" style="html=1;dropTarget=0;whiteSpace=wrap;" value="The Logger class is used in several blocks but is omitted from the UML diagram to keep it clear." vertex="1">
+          <mxGeometry height="94" width="280" x="40" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="IcZiIQiYiU_qD58I-Lys-2" parent="IcZiIQiYiU_qD58I-Lys-1" style="shape=module;jettyWidth=8;jettyHeight=4;" value="" vertex="1">
+          <mxGeometry height="20" relative="1" width="20" x="1" as="geometry">
+            <mxPoint x="-270" y="5" as="offset" />
           </mxGeometry>
         </mxCell>
       </root>
