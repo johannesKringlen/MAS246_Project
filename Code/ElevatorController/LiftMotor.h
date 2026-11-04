@@ -9,7 +9,7 @@ This class controls the elevator’s vertical movement.
 #include "PID.h"
 
  
-PID pid(1.0f, 0.0f, 1.0f);
+PID pid(1.0f, 0.0f, 0.1f);
 
 class LiftMotor
 {
