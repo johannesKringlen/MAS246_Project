@@ -1,7 +1,7 @@
-clc; close all;
+clc; close all; clear;
 
-Kp = 1;
-Kd = 0.1;
+Kp = 0.5;
+Kd = 0.05;
 Ki = 0;
 %%
 
