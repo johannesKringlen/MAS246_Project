@@ -1,0 +1,7 @@
+t = position.time;
+y = squeeze(position.signals.values);
+
+plot(t, y, '.-')
+grid on
+xlabel('Tid [s]')
+ylabel('Posisjon')
