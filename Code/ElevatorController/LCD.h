@@ -1,5 +1,5 @@
 /*LCD
-This class handles the communication to LCd display.
+This class handles the communication to LCD display.
 */
 
 #include "LiquidCrystal.h"
