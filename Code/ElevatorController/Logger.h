@@ -1,17 +1,18 @@
 #include "WString.h"
 /*Logger
-This class add a timestamp to the log.
+Timestamped logging helper.
+Adds the elapsed time since startup to each log message.
 */
 
 #pragma once
 void logMessage(String message) 
 {
-unsigned long totalMilliseconds = millis();
-unsigned long totalSeconds = totalMilliseconds / 1000UL;
-unsigned long hours = totalSeconds / 3600UL;
-unsigned long minutes = (totalSeconds % 3600UL) / 60UL;
-unsigned long seconds = totalSeconds % 60UL;
-unsigned long milliseconds =
+  unsigned long totalMilliseconds = millis();
+  unsigned long totalSeconds = totalMilliseconds / 1000UL;
+  unsigned long hours = totalSeconds / 3600UL;
+  unsigned long minutes = (totalSeconds % 3600UL) / 60UL;
+  unsigned long seconds = totalSeconds % 60UL;
+  unsigned long milliseconds =
     totalMilliseconds
     - hours * 3600000UL
     - minutes * 60000UL

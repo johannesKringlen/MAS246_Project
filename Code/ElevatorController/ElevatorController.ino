@@ -3,7 +3,6 @@ This is the main file
 
 */
 
-#include "Brake.h"
 #include "Door.h"
 #include "Elevator.h" 
 #include "ElevatorButton.h"
@@ -78,7 +77,6 @@ void setup()
 
 void loop()
 {
-  LCDOnOff(); // to be removed when done with the program
   MainSequence();
 }
 

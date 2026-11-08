@@ -55,7 +55,7 @@ class LiftMotor
 
       tempSpeed = pid.CalculatePID(float(target), float(encoder.GetStatus()));
       
-      refSpeed = toMotor(tempSpeed);
+      refSpeed = ToMotor(tempSpeed);
       
       //logMessage(String(refSpeed));
       //logMessage(String(tempSpeed));
@@ -90,7 +90,8 @@ class LiftMotor
     logMessage(_tempString); 
   }
 
-  int toMotor(int pidOutput)
+  // Calculate the pwm that need to be sent to the motor
+  int ToMotor(int pidOutput)
   {
     int deadbandPos = 4;
     int deadbandNeg = 4;
