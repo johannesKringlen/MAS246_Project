@@ -18,15 +18,20 @@ To run the elevator on All-in-One Servo Lab (AIOSL) [1] [2], download all the fi
 The elevator starts on floor 1 with the door closed and waits for a command. 
 The switches labeled 1–4 above the joystick represent the buttons on the elevator cabin’s control panel.
 
+Switch 5 simulates the door’s collision sensor.
+
 When a button for a different floor is pressed, that floor is added to the queue and its corresponding LED lights up. 
 If the queue is empty, the elevator moves to the requested floor immediately; otherwise, it follows the order of the queue.
 
 The potentiometer to the right of the power button simulates the load in the elevator. 
 When the elevator has stopped at a floor and the doors are open, a passenger can board. 
+
 If the load exceeds 500 kg (approximately halfway through the potentiometer’s rotation), an overweight warning appears. 
 The elevator will not proceed until the load is 500 kg or less.
 
 The wheel on the left represents the lift motor’s pulley, while the wheel on the right represents the door motor’s pulley.
+
+
 
 Some keyboard keys are used as floor buttons:
 - 1 = Floor 1 Up
@@ -35,9 +40,8 @@ Some keyboard keys are used as floor buttons:
 - 3 = Floor 3 Up
 - e = Floor 3 Down
 - 4 = Floor 4 Down
-If a floor button for the elevator’s current floor is pressed while the doors are closing, the doors open again to allow another passenger to board.
-Switch 5 simulates the door’s collision sensor. If the sensor is triggered while the door is closing, the door reopens.
-
+  
+If a floor button for the elevator’s current floor is pressed or the collision sensor is triggered while the doors are closing, the doors open again to allow another passenger to board.
 
 ## References
 
