@@ -36,6 +36,8 @@ Some keyboard keys are used as floor buttons:
 - e = Floor 3 Down
 - 4 = Floor 4 Down
 If a floor button for the elevator’s current floor is pressed while the doors are closing, the doors open again to allow another passenger to board.
+Switch 5 simulates the door’s collision sensor. If the sensor is triggered while the door is closing, the door reopens.
+
 
 ## References
 
