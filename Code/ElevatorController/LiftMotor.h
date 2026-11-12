@@ -9,7 +9,7 @@ This class controls the elevator’s vertical movement.
 #include "PID.h"
 
  
-PID pid(0.5f, 0.0f, 0.05f);
+PID pid(0.5f, 0.0f, 0.07f);
 
 class LiftMotor
 {
@@ -35,7 +35,7 @@ class LiftMotor
   void Move(Encoder& encoder, int nextFloor, int actualFloor)
   {
     int target = GetTarget(nextFloor);
-    _tempString = "Encoder position 1 = ";
+    _tempString = "Encoder start position = ";
     _tempString += String(encoder.GetStatus());
     logMessage(_tempString);
 
@@ -50,15 +50,17 @@ class LiftMotor
 
     while (((abs(error) > 1) && ((refSpeed  >= 127) || (refSpeed <= 129))) || timePassed < timeout)
     {
-      delayMicroseconds(800);
+      //delayMicroseconds(800);
       actualTime = millis();
 
-      tempSpeed = pid.CalculatePID(float(target), float(encoder.GetStatus()));
+      int actual_position = encoder.GetStatus();
+
+      tempSpeed = pid.CalculatePID(float(target), float(actual_position));
       
       refSpeed = ToMotor(tempSpeed);
       
-      //logMessage(String(refSpeed));
-      //logMessage(String(tempSpeed));
+      //logMessage(String(actual_position));
+    
 
       //enable or disable motors
       if (refSpeed != 0)
@@ -75,17 +77,20 @@ class LiftMotor
       error = target - encoder.GetStatus();
 
       timePassed = actualTime - firstTime;
+
+      delayMicroseconds(800);
+
     }
 
 
     analogWrite(refSpeedPin, 128);
-    _tempString = "Encoder position 2 = ";
-    _tempString += String(encoder.GetStatus());
-    logMessage(_tempString); 
+    //_tempString = "Encoder position 2 = ";
+    //_tempString += String(encoder.GetStatus());
+    //logMessage(_tempString); 
     
     delay(500);
 
-    _tempString = "Encoder position 3 = ";
+    _tempString = "Encoder final position = ";
     _tempString += String(encoder.GetStatus());
     logMessage(_tempString); 
   }
