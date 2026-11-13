@@ -21,6 +21,35 @@ class LiftMotor
   String _tempString;
   int targetPos = 0;
 
+  // Calculate the pwm that need to be sent to the motor
+  int ToMotor(int pidOutput)
+  {
+    int deadbandPos = 4;
+    int deadbandNeg = 4;
+
+    int pwm=128;
+
+    int u = constrain(pidOutput, -128, 128);
+    
+    if (u > 0)
+    {
+        pwm = 128 + deadbandPos + ((127-deadbandPos)*u/256);
+    }
+    if (u < 0)
+    {
+        pwm = 128 - deadbandNeg + (127-deadbandNeg)*u/256;
+    }
+
+    return pwm;
+  }
+
+  // Sets the encoder target position for the selected floor.
+  int GetTarget(int nextFloor)
+  {
+    targetPos = 4096*(nextFloor-1);
+    return targetPos;
+  }
+
   public:
   // Initializes the DC motor used for the lift
   void Begin() //legg inn i setup
@@ -93,35 +122,6 @@ class LiftMotor
     _tempString = "Encoder final position = ";
     _tempString += String(encoder.GetStatus());
     logMessage(_tempString); 
-  }
-
-  // Calculate the pwm that need to be sent to the motor
-  int ToMotor(int pidOutput)
-  {
-    int deadbandPos = 4;
-    int deadbandNeg = 4;
-
-    int pwm=128;
-
-    int u = constrain(pidOutput, -128, 128);
-    
-    if (u > 0)
-    {
-        pwm = 128 + deadbandPos + ((127-deadbandPos)*u/256);
-    }
-    if (u < 0)
-    {
-        pwm = 128 - deadbandNeg + (127-deadbandNeg)*u/256;
-    }
-
-    return pwm;
-  }
-
-  // Sets the encoder target position for the selected floor.
-  int GetTarget(int nextFloor)
-  {
-    targetPos = 4096*(nextFloor-1);
-    return targetPos;
   }
      
 };
