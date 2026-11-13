@@ -77,9 +77,11 @@ class LiftMotor
     unsigned long timePassed = 0;
     int timeout = abs(nextFloor - actualFloor)*2000+2000;
 
-    while (((abs(error) > 1) && ((refSpeed  >= 127) || (refSpeed <= 129))) || timePassed < timeout)
+
+    /* Keep adjusting the position until error is below 3, and the reference speed has stabilized around 128
+       or the timeout has not expired */ 
+    while (((abs(error) > 3) && ((refSpeed  >= 127) || (refSpeed <= 129))) || timePassed < timeout)
     {
-      //delayMicroseconds(800);
       actualTime = millis();
 
       int actual_position = encoder.GetStatus();
@@ -87,9 +89,6 @@ class LiftMotor
       tempSpeed = pid.CalculatePID(float(target), float(actual_position));
       
       refSpeed = ToMotor(tempSpeed);
-      
-      //logMessage(String(actual_position));
-    
 
       //enable or disable motors
       if (refSpeed != 0)
@@ -113,9 +112,7 @@ class LiftMotor
 
 
     analogWrite(refSpeedPin, 128);
-    //_tempString = "Encoder position 2 = ";
-    //_tempString += String(encoder.GetStatus());
-    //logMessage(_tempString); 
+   
     
     delay(500);
 
