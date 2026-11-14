@@ -87,9 +87,17 @@ grid(ax2, "on");
 box(ax2, "on");
 legend(ax2, pidLabels, "Location", "southeast");
 
-saveas(figPidSub, "PID_Tuning_Sub.jpg", "jpeg");
-saveas(figPidSub, "PID_Tuning_Sub.eps", "epsc2");
+% assign a folder where to create the images
+outputFolder = fullfile(fileparts(mfilename("fullpath")), "subplot");
+if ~isfolder(outputFolder)
+    mkdir(outputFolder);
+end
 
+% save the file in the new folder
+saveas(figPidSub, fullfile(outputFolder, "PID_Tuning_Sub.jpg"), ...
+    "jpeg");
+saveas(figPidSub, fullfile(outputFolder, "PID_Tuning_Sub.eps"), ...
+    "epsc2");
 
 % Create the zoomed figure with two subplots
 figPidZoomSub = figure;
@@ -138,5 +146,8 @@ grid(ax4, "on");
 box(ax4, "on");
 legend(ax4, pidLabels, "Location", "best");
 
-saveas(figPidZoomSub, "PID_Tuning_Zoom_Sub.jpg", "jpeg");
-saveas(figPidZoomSub, "PID_Tuning_Zoom_Sub.eps", "epsc2");
+
+saveas(figPidZoomSub, fullfile(outputFolder, "PID_Tuning_Zoom_Sub.jpg"), ...
+    "jpeg");
+saveas(figPidZoomSub, fullfile(outputFolder, "PID_Tuning_Zoom_Sub.eps"), ...
+    "epsc2");

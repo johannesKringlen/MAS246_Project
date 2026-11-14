@@ -80,8 +80,17 @@ leg1 = legend(ax1, [plt1, plt2, plt3, plt4], ...
     "Kp=0.5, Kd=0.05, Ki=0"}, ...
     "Location", "southeast");
 
-saveas(figPidTuning, "PID_Tuning.jpg", "jpeg");
-saveas(figPidTuning, "PID_Tuning.eps", "epsc2");
+% assign a folder where to create the images
+outputFolder = fullfile(fileparts(mfilename("fullpath")), "squeezed");
+if ~isfolder(outputFolder)
+    mkdir(outputFolder);
+end
+
+% save the file in the new folder
+saveas(figPidTuning, fullfile(outputFolder, "PID_Tuning.jpg"), ...
+    "jpeg");
+saveas(figPidTuning, fullfile(outputFolder, "PID_Tuning.eps"), ...
+    "epsc2");
 
 % Plot a zoomed version of PID comparison
 
@@ -118,8 +127,11 @@ grid(ax2, "on");
 box(ax2, "on");
 hold(ax2, "off");
 
-saveas(figPidTuning, "PID_TuningZoom.jpg", "jpeg");
-saveas(figPidTuning, "PID_TuningZoom.eps", "epsc2");
+saveas(figPidZoom, fullfile(outputFolder, "PID_TuningZoom.jpg"), ...
+    "jpeg");
+saveas(figPidZoom, fullfile(outputFolder, "PID_TuningZoom.eps"), ...
+    "epsc2");
+
 
 % Plot PWM comparison
 
@@ -155,8 +167,10 @@ grid(ax3, "on");
 box(ax3, "on");
 hold(ax3, "off");
 
-saveas(figPidTuning, "PID_TuningPWM.jpg", "jpeg");
-saveas(figPidTuning, "PID_TuningPWM.eps", "epsc2");
+saveas(figPwm, fullfile(outputFolder, "PID_TuningPWM.jpg"), ...
+    "jpeg");
+saveas(figPwm, fullfile(outputFolder, "PID_TuningPWM.eps"), ...
+    "epsc2");
 
 % Plot a zoomed version for PWM comparison
 
@@ -192,5 +206,9 @@ grid(ax4, "on");
 box(ax4, "on");
 hold(ax4, "off");
 
-saveas(figPidTuning, "PID_TuningPWMZoom.jpg", "jpeg");
-saveas(figPidTuning, "PID_TuningPWMZoom.eps", "epsc2");
+
+
+saveas(figPwmZoom, fullfile(outputFolder, "PID_TuningPWMZoom.jpg"), ...
+    "jpeg");
+saveas(figPwmZoom, fullfile(outputFolder, "PID_TuningPWMZoom.eps"), ...
+    "epsc2");
