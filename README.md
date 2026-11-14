@@ -1,6 +1,6 @@
 # MAS246_Project
 
-Project for MAS246, Autumn 2026.
+Project for MAS246, Autumn 2026 — Group 3.
 
 This repository contains the documents and source code used for the project.
 
