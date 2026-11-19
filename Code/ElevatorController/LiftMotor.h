@@ -24,8 +24,8 @@ class LiftMotor
   // Calculate the pwm that need to be sent to the motor
   int ToMotor(int pidOutput)
   {
-    int deadbandPos = 4;
-    int deadbandNeg = 4;
+    int deadbandPos = 6;
+    int deadbandNeg = 6;
 
     int pwm=128;
 
@@ -80,7 +80,7 @@ class LiftMotor
 
     /* Keep adjusting the position until error is below 3, and the reference speed has stabilized around 128
        or the timeout has not expired */ 
-    while (((abs(error) > 3) && ((refSpeed  >= 127) || (refSpeed <= 129))) || timePassed < timeout)
+    while ( ((abs(error) > 3) && (abs(refSpeed - 128) > 1)) || timePassed < timeout)
     {
       actualTime = millis();
 
@@ -105,6 +105,12 @@ class LiftMotor
       error = target - encoder.GetStatus();
 
       timePassed = actualTime - firstTime;
+
+      //Exit the loop in case the timeout has expired and the error is at least less than 10
+      if ((timePassed >= timeout) && (abs(error)<10)) 
+      {
+        break;
+      }
 
       delayMicroseconds(800);
 

@@ -34,7 +34,7 @@ class PID
   float CalculatePID(float setpoint, float actual)
   {
     _actualTime = millis();
-    _dt =  (_actualTime - _lastTime); // dt in seconds
+    _dt =  (_actualTime - _lastTime); // dt in milliseconds
 
     // Prevent division by zero during the first calculation
     if (_dt <= 0.0f)
